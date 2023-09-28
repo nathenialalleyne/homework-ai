@@ -1,30 +1,43 @@
-/** @type {import("eslint").Linter.Config} */
-const config = {
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    project: true,
-  },
-  plugins: ["@typescript-eslint"],
-  extends: [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
+module.exports = {
+  plugins: [
+    '@typescript-eslint/eslint-plugin',
+    'prettier',
   ],
-  rules: {
-    // These opinionated rules are enabled in stylistic-type-checked above.
-    // Feel free to reconfigure them to your own preference.
-    "@typescript-eslint/array-type": "off",
-    "@typescript-eslint/consistent-type-definitions": "off",
-
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
-      {
-        prefer: "type-imports",
-        fixStyle: "inline-type-imports",
-      },
-    ],
-    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'plugin:react/recommended',
+    'plugin:@next/next/recommended',
+  ],
+  root: true,
+  env: {
+    node: true,
+    jest: true,
   },
-};
-
-module.exports = config;
+  rules: {
+    'react-hooks/exhaustive-deps': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-namespace': ['error',
+      { "allowDeclarations": true }
+    ],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false
+        }
+      }
+    ],
+    'prettier/prettier': 'error',
+  },
+  settings: {
+    react: {
+      version: '18',
+    },
+  },
+}
