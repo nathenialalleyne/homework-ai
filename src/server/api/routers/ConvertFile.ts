@@ -1,12 +1,13 @@
 import z from 'zod'
   
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { utapi } from 'uploadthing/server';
 
 async function ocrEndpoint(convert: string){
     if (!convert) return
   
     const formData = new FormData();
-    formData.append("base64Image", convert);
+    formData.append("url", convert);
     formData.append("OCREngine", "2");
 
     const data = await fetch('https://api.ocr.space/parse/image', {
@@ -24,10 +25,11 @@ async function ocrEndpoint(convert: string){
 
 export const convertRouter = createTRPCRouter({
   convert: publicProcedure
-    .input(z.object({ base64: z.string() }))
+    .input(z.object({ fileKey: z.string() }))
     .query(async ({ input }) => {
       try{
-        const converted = await ocrEndpoint(input.base64)
+        const file = await utapi.getFileUrls(input.fileKey)
+        const converted = await ocrEndpoint(file[0]?.url as string)
         return converted;
       }catch(err){
         return err
