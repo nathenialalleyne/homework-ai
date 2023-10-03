@@ -16,6 +16,9 @@ export default {
         move: "move 20s linear infinite",
       }
     },
+    fontFamily: {
+      sans: ["Inter", "sans-serif"],
+    }
   },
   plugins: [],
 } satisfies Config;

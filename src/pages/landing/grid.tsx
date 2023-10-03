@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import LandingFollow from './mousefollow'
 import { SquareArray } from './grid-square'
+import LandingHeading from './heading'
 
 export default function LandingGrid() {
-    const [pos, setPos] = useState<any>({ x: 0, y: 0 })
-    const [fitSquare, setFitSquare] = useState<number>(12)
+    const [fitSquare, setFitSquare] = useState<number>(typeof window !== 'undefined' ? calculateFitSquare() : 12)
 
     useEffect(() => {
 
@@ -22,22 +22,19 @@ export default function LandingGrid() {
     }, [fitSquare])
 
     function calculateFitSquare() {
-
         const screenHeight = window.innerHeight;
         const squareSize = 96;
         return Math.ceil(screenHeight / squareSize);
     }
 
-
     return (
-        <div className='w-full h-full absolute z-20' >
+        <div className='w-full h-full relative z-20 absolute' >
             <LandingFollow />
-            <div className='flex flex-col w-screen h-screen'>
+            <div suppressHydrationWarning className='flex flex-col w-screen h-screen'>
                 {Array(fitSquare).fill(0).map((_, i) => {
                     return <SquareArray key={i} />
                 })}
             </div>
-
         </div>
     )
 }

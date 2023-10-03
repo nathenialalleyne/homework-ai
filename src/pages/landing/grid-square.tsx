@@ -6,13 +6,12 @@ export default function GridSquare() {
     return (
         <div className='h-24 w-24 transparent shrink-0'>
             <div className='w-[calc(100%-1px)] h-[calc(100%-1px)] bg-stone-800' />
-
         </div>
     )
 }
 
 export function SquareArray() {
-    const [fitSquare, setFitSquare] = useState<number>(typeof window !== 'undefined' ? calculateFitSquare() : 20)
+    const [fitSquare, setFitSquare] = useState<number>(typeof window !== 'undefined' ? calculateFitSquare() : 12)
 
     useEffect(() => {
 
