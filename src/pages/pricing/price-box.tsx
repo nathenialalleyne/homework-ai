@@ -11,7 +11,7 @@ type Props = {
 
 export default function PriceBox({ plan, price, features }: Props) {
     return (
-        <div className='w-2/12 h-1/2 bg-stone-900/50 flex flex-col items-center text-white p-2 rounded-2xl'>
+        <div className='w-2/12 h-full bg-stone-900/50 flex flex-col items-center text-white p-2 rounded-2xl'>
             <div className='flex justify-center items-center flex-col font-semibold gap-4'>
                 <div className='text-5xl'>{plan}</div>
                 <div className='flex flex-col justify-center items-center'>
