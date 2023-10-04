@@ -2,6 +2,7 @@ import z from 'zod'
   
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { utapi } from 'uploadthing/server';
+import vision from '@google-cloud/vision';
 
 async function ocrEndpoint(convert: string){
     if (!convert) return
@@ -22,6 +23,43 @@ async function ocrEndpoint(convert: string){
     return dataJson
 }
 
+async function getGoogleStorage() {
+    const storage = new Storage();
+
+    const option = {
+      destination: 
+    }
+}
+
+async function setEndPoint(url: string){
+  const client = new vision.ImageAnnotatorClient();
+  const [opertation] = await client.asyncBatchAnnotateFiles({
+    requests: [
+      {
+        inputConfig: {
+          gcsSource: {
+            uri: url,
+          },
+          mimeType: 'application/pdf',
+        },
+        features: [
+          {
+            type: 'DOCUMENT_TEXT_DETECTION',
+          },
+        ],
+        outputConfig: {
+          gcsDestination: {
+            uri: url,
+          },
+        },
+      },
+    ],
+  })
+
+  const [filesResponse] = await opertation.promise();
+
+  return filesResponse
+}
 
 export const convertRouter = createTRPCRouter({
   convert: publicProcedure
@@ -29,7 +67,7 @@ export const convertRouter = createTRPCRouter({
     .query(async ({ input }) => {
       try{
         const file = await utapi.getFileUrls(input.fileKey)
-        const converted = await ocrEndpoint(file[0]?.url as string)
+        const converted = await setEndPoint(file[0]?.url as string)
         return converted;
       }catch(err){
         return err

@@ -13,28 +13,16 @@ export default function Home() {
   const [data, setData] = useState<any>()
   // const hello = api.example.hello.useQuery({ text: convert as File }, { enabled: false });
 
-  const ocrEndpoint = async () => {
-    if (!convert) return
-
-    setLoading(true)
-    const formData = new FormData();
-    formData.append("file", convert);
-    formData.append("OCREngine", "2");
-
-    const data = await fetch('https://api.ocr.space/parse/image',
-      {
-        method: 'POST',
-        headers: {
-          apikey: 'K84034087688957',
-        },
-        body: formData
-      })
-
-    const dataJson = await data.json()
-    setLoading(false)
-    return dataJson
+  const sendToGoogleStorage = async () => {
+    const formData = new FormData()
+    formData.append('file', convert as File)
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    })
+    const data = await res.json()
+    return data
   }
-
 
   return (
     <>
@@ -45,10 +33,11 @@ export default function Home() {
       }}></input>
       {loading ? <div>loading</div>
         : <button onClick={async () => {
-          const data = await ocrEndpoint()
+          const data = await sendToGoogleStorage()
+          console.log(data)
           setData(data)
         }}>send</button>}
-      {data && <div>{data.ParsedResults[0].ParsedText}</div>}
+      {data ? <div>got data</div> : <div>no data</div>}
     </>
   );
 }
