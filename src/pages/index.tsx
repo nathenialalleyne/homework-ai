@@ -24,6 +24,13 @@ export default function Home() {
     return data
   }
 
+  const seperateArray = (array: any[]) => {
+    const newArray = []
+    for (let p in array) {
+      newArray.push(JSON.parse(array[p]))
+    }
+    return newArray
+  }
   return (
     <>
       <UserButton />
@@ -34,10 +41,13 @@ export default function Home() {
       {loading ? <div>loading</div>
         : <button onClick={async () => {
           const data = await sendToGoogleStorage()
-          console.log(data)
-          setData(data)
+          let parsedArray = seperateArray(data.success)
+          let fullText = parsedArray.map((item) => {
+            return item.responses[0].fullTextAnnotation.text
+          })
+          setData(fullText)
         }}>send</button>}
-      {data ? <div>got data</div> : <div>no data</div>}
+      {data ? <div>got data {data}</div> : <div>no data</div>}
     </>
   );
 }

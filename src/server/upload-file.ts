@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { File } from 'formidable';
 
 import { createReadStream } from 'fs';
-import OCRFileContent from './ocr-file-content';
+import OCRFileContent, { getImageFileContent } from './ocr-file-content';
 
 const storage = new Storage();
 
@@ -19,7 +19,7 @@ return url;
 };
 
 export default async function uploadFile(file: File) {
-
+  try {
     const option = {
       destination: randomUUID()
       
@@ -33,16 +33,25 @@ export default async function uploadFile(file: File) {
               contentType: file.mimetype as string
             },
             ...option
+
           })
         )
         .on('error', (error) => {
           reject(error);
         })
         .on('finish', async () => {
-          const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename)
-          resolve(getFileContent);
+          resolve('done');
         });
     });
 
-    return upload
+    if(upload === 'done'){
+      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename)
+      return getFileContent
+    }
+    throw new Error('No file content')
+  } catch (error) {
+    throw new Error('No file content', {
+      cause: error
+    })
+  }
 }
