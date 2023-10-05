@@ -24,11 +24,11 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
             const form = formidable({})
 
             const data = await new Promise((res, rej) =>{
-                form.parse(req, (err, fields, files) => {
+                form.parse(req, async (err, fields, files) => {
                     if (err) return rej(err)
                     if (!files.file) return rej("No file provided")
                     const file = files.file[0] as formidable.File
-                    const upload = uploadFile(file)
+                    const upload = await uploadFile(file)
                     res(upload)
                 })
             })
