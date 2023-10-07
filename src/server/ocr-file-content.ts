@@ -28,7 +28,7 @@ export default async function OCRFileContent(url: string, fileName: string, rand
       },
     ],
   })
-  
+
   await operation.promise()
 
   // const fileContent = await readOCRFileContent(randomID)
@@ -57,6 +57,7 @@ const fetchAndCombineJSONFiles = async (prefix:string) => {
     for (const file of files) {
       const [data] = await file.download();
       fileContents.push(data.toString('utf-8'));
+      file.delete();
     }
 
     return fileContents

@@ -5,6 +5,7 @@ import splitPDF from './split-pdf';
 
 import { createReadStream } from 'fs';
 import OCRFileContent, { getImageFileContent } from './ocr-file-content';
+import deleteFile from './delete-gcps-files';
 
 const storage = new Storage();
 
@@ -36,8 +37,12 @@ export async function uploadSplitFile(file: Buffer, fileName: string){
     
     if(upload === 'done'){
         const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + fileName, fileName, randomID)
+
+        await deleteFile(fileName)
+        
         return getFileContent
     }
+
     throw new Error('No file content')
 
     } catch (error) {
