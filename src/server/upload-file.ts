@@ -1,32 +1,64 @@
 import { Storage } from '@google-cloud/storage';
 import { randomUUID } from 'crypto';
 import { File } from 'formidable';
+import splitPDF from './split-pdf';
 
 import { createReadStream } from 'fs';
 import OCRFileContent, { getImageFileContent } from './ocr-file-content';
 
 const storage = new Storage();
 
-export const getSecuredUrl = async (filename: string) => {
-const now = Date.now();
-const expires = new Date(now + 24 * 60 * 60 * 1000);
-const url = await storage.bucket('pdf-source-storage-bucket').file(filename).getSignedUrl({
-expires: expires.getTime(),
-version: "v4",
-action: "read",
-});
-return url;
-};
+export async function uploadSplitFile(file: Buffer, fileName: string){
+  try{
+    const randomID = randomUUID()
 
-export default async function uploadFile(file: File) {
-  try {
     const option = {
       destination: randomUUID()
       
     }
-    
     const upload = await new Promise((resolve, reject) => {
-      createReadStream(file.filepath)
+      const save = storage.bucket('pdf-source-storage-bucket').file(fileName)
+
+      save.save(file, {
+          metadata: {
+            contentType: 'application/pdf'
+          },
+          ...option
+        }, (err) => {
+          if (err) {
+            throw new Error('No file content', {
+              cause: err
+            })
+          }
+          resolve('done')
+        })
+    })
+    
+    if(upload === 'done'){
+        const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + fileName, fileName, randomID)
+        return getFileContent
+    }
+    throw new Error('No file content')
+
+    } catch (error) {
+      throw new Error('No file content', {
+        cause: error
+      })
+    }
+}
+
+export default async function uploadFile(file: File) {
+  try {
+
+    const randomID = randomUUID()
+
+    const option = {
+      destination: randomUUID()
+      
+    }
+
+    const upload = await new Promise((resolve, reject) => {
+      createReadStream((file as File).filepath)
         .pipe(
           storage.bucket('pdf-source-storage-bucket').file(file.newFilename as string).createWriteStream({
             metadata: {
@@ -45,7 +77,7 @@ export default async function uploadFile(file: File) {
     });
 
     if(upload === 'done'){
-      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename)
+      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomID)
       return getFileContent
     }
     throw new Error('No file content')

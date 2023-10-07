@@ -3,10 +3,9 @@ import { Storage } from '@google-cloud/storage';
 import deleteFile from './delete-gcps-files';
 import { randomUUID } from 'crypto';
 
-export default async function OCRFileContent(url: string, fileName: string){
+export default async function OCRFileContent(url: string, fileName: string, randomID: `${string}-${string}-${string}-${string}-${string}`){
     try{ 
         const client = new vision.ImageAnnotatorClient();
-        const randomID = randomUUID()
         const [operation] = await client.asyncBatchAnnotateFiles({
     requests: [
       {
@@ -29,25 +28,7 @@ export default async function OCRFileContent(url: string, fileName: string){
       },
     ],
   })
-
-  // const operation = client.batchAnnotateFiles({
-  //   requests: [
-  //     {
-  //       inputConfig: {
-  //         gcsSource: {
-  //           uri: url,
-  //         },
-  //         mimeType: 'application/pdf',
-  //       },
-  //       features: [
-  //         {
-  //           type: 'DOCUMENT_TEXT_DETECTION',
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // })
-
+  
   await operation.promise()
 
   // const fileContent = await readOCRFileContent(randomID)
