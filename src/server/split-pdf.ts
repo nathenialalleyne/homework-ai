@@ -1,6 +1,8 @@
 import { PDFDocument } from 'pdf-lib';
 import fs from 'fs';
 import { uploadSplitFile } from './upload-file';
+import createFileGCPStorage from './create-file';
+import { randomUUID } from 'crypto';
 
 export default async function splitPDF(inputPDFPath: string) {
     const pagesPerSection = 5;
@@ -32,9 +34,30 @@ export default async function splitPDF(inputPDFPath: string) {
 
         // Wait for all section uploads to complete before returning
         const files = await Promise.all(sectionPromises);
+        const fullDocumentText = joinText(files as string[])
+        createFileGCPStorage(randomUUID() + '.txt', fullDocumentText)
 
-        return files;
     } catch (error) {
         console.error('Error splitting PDF:', error);
     }
+}
+
+function joinText(texts: string[]) {
+    const seperateArray = (array: any[]) => {
+        const newArray = []
+        for (let p in array) {
+            newArray.push(JSON.parse(array[p]))
+        }
+        return newArray
+    }
+
+    const parsedArray = seperateArray(texts)
+
+    const fullText = parsedArray.map((item) => {
+        return item.responses[0].fullTextAnnotation.text.replace(/\n/g, ' ');
+    })
+
+    const joined = fullText.join(' ')
+    
+    return joined
 }

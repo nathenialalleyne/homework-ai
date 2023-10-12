@@ -32,13 +32,22 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
                     if (!files.file) return rej("No file provided")
                     
                     const file = files.file[0] as formidable.File
-                    const pdfData = await fs.promises.readFile(file.filepath)
-                    const pdf = PDFDocument.load(pdfData)
 
-                    if ((await pdf).getPageCount() > 5){
-                        const split = await splitPDF(file.filepath)
-                        res(split)
-                    }else{
+                    if (file.mimetype === 'application/pdf'){
+                    
+                        const pdfData = await fs.promises.readFile(file.filepath)
+                        const pdf = PDFDocument.load(pdfData)
+
+                        if ((await pdf).getPageCount() > 5){
+                            const split = await splitPDF(file.filepath)
+                            res(split)
+                        }else{
+                            const upload = await uploadFile(file)
+                            res(upload)
+                        }
+                    }
+
+                    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
                         const upload = await uploadFile(file)
                         res(upload)
                     }

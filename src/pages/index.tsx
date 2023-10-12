@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "@/utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { set } from "zod";
 
 import { UserButton } from "@clerk/nextjs";
@@ -13,6 +13,10 @@ export default function Home() {
   const [data, setData] = useState<any>()
   // const hello = api.example.hello.useQuery({ text: convert as File }, { enabled: false });
 
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
   const sendToGoogleStorage = async () => {
     const formData = new FormData()
     formData.append('file', convert as File)
@@ -21,6 +25,7 @@ export default function Home() {
       body: formData
     })
     const data = await res.json()
+    console.log(data)
     return data
   }
 

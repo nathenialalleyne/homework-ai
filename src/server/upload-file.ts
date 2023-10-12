@@ -4,7 +4,7 @@ import { File } from 'formidable';
 import splitPDF from './split-pdf';
 
 import { createReadStream } from 'fs';
-import OCRFileContent, { getImageFileContent } from './ocr-file-content';
+import OCRFileContent from './ocr-file-content';
 import deleteFile from './delete-gcps-files';
 
 const storage = new Storage();
@@ -36,10 +36,10 @@ export async function uploadSplitFile(file: Buffer, fileName: string){
     })
     
     if(upload === 'done'){
-        const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + fileName, fileName, randomID)
+        const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + fileName, fileName, randomID, 'application/pdf')
 
         await deleteFile(fileName)
-        
+
         return getFileContent
     }
 
@@ -63,7 +63,7 @@ export default async function uploadFile(file: File) {
     }
 
     const upload = await new Promise((resolve, reject) => {
-      createReadStream((file as File).filepath)
+      createReadStream(file.filepath)
         .pipe(
           storage.bucket('pdf-source-storage-bucket').file(file.newFilename as string).createWriteStream({
             metadata: {
@@ -82,7 +82,7 @@ export default async function uploadFile(file: File) {
     });
 
     if(upload === 'done'){
-      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomID)
+      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomID, file.mimetype as string)
       return getFileContent
     }
     throw new Error('No file content')

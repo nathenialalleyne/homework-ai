@@ -3,8 +3,9 @@ import { Storage } from '@google-cloud/storage';
 import deleteFile from './delete-gcps-files';
 import { randomUUID } from 'crypto';
 
-export default async function OCRFileContent(url: string, fileName: string, randomID: `${string}-${string}-${string}-${string}-${string}`){
+export default async function OCRFileContent(url: string, fileName: string, randomID: `${string}-${string}-${string}-${string}-${string}`, type: string){
     try{ 
+      if (type === 'application/pdf'){
         const client = new vision.ImageAnnotatorClient();
         const [operation] = await client.asyncBatchAnnotateFiles({
     requests: [
@@ -39,6 +40,15 @@ export default async function OCRFileContent(url: string, fileName: string, rand
   }
 
   return fileContent
+}
+if (type === 'image/jpeg' || type === 'image/png'){
+  const client = new vision.ImageAnnotatorClient();
+  const [result] = await client.documentTextDetection(url);
+
+  deleteFile(fileName)
+
+  return result.fullTextAnnotation;
+}
     } catch (err){
     throw new Error('No file content', {
       cause: err
@@ -67,35 +77,3 @@ const fetchAndCombineJSONFiles = async (prefix:string) => {
     });
   }
 };
-
-
-export const readOCRFileContent = async (fileName: string) => {
-    try{
-        const file = await new Promise((res,rej)=>{
-            new Storage().bucket('pdf-source-storage-bucket')
-            .file(fileName)
-            .download()
-            .then((d)=>{
-            res((d[0].toString('utf-8')))
-            })
-        })
-        return JSON.parse((file as string)).responses[0].fullTextAnnotation.text
-    }catch(err){
-        throw new Error('No file content', {
-            cause: err
-        })
-    }
-}
-
-export const getImageFileContent = async (fileName: string) => {
-  try{
-  const client = new vision.ImageAnnotatorClient();
-  const [result] = await client.documentTextDetection(fileName);
-  const fullTextAnnotation = result.fullTextAnnotation;
-  return fullTextAnnotation?.text
-  }catch(err){
-    throw new Error('No file content', {
-      cause: err
-    })
-  }
-}
