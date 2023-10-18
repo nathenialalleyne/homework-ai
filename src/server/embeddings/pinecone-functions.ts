@@ -1,5 +1,5 @@
 import { pinecone } from '@/utils/pinecone';
-import { RecordValues } from '@pinecone-database/pinecone';
+import { RecordMetadata, RecordValues, ScoredPineconeRecord } from '@pinecone-database/pinecone';
 import { match } from 'assert';
 import { Embedding } from 'openai/resources';
 
@@ -14,63 +14,42 @@ export const upsertEmbedding = async (embedding: Embedding[], randomID: string, 
                 values: embed.embedding as RecordValues,
                 metadata: {
                     reqid: randomID,
+                    index: index
                 }
             };
         });
         await pinecone.index('test').upsert([...upsertData])
-
-
-        const data = await pinecone.index('test').query({
-            vector: promptEmbed,
-            topK: 10,
-            filter: {
-                "reqid": {$eq: 'test2'}
-            }
-        })        
-
-        const matches = data.matches.map((match) => {
-            const id = match.id as string
-            const index = idList.indexOf(id)
-            return {
-                ...match,
-                index
-            }
-        })
-        return matches
+        return await searchEmbeddings(idList, promptEmbed, randomID)
     }
     catch (e) {
-        throw new Error(`Error upserting embedding`, {
+        throw new Error(`Error upserting embedding ${e}`, {
             cause: e
         })
     }
 }
 
-// const getEmbeddings = async (id: string, promptEmbed: number[]) => {
-//     try {
-//         const data = await pinecone.index('test').query({
-//             id,
-//             vector: promptEmbed,
-//             topK: 10,
-//         })
-//         return data
-//     }
-//     catch (e) {
-//         throw new Error(`Error retrieving embedding`, {
-//             cause: e
-//         })
-//     }
-// }
+const searchEmbeddings = async (idList: string[], promptEmbed: number[], randomID: string): Promise<ScoredPineconeRecord<RecordMetadata>[]> => {
+    const data = await pinecone.index('test').query({
+        vector: promptEmbed,
+        topK: 10,
+        filter: {
+            "reqid": {$eq: randomID}            
+        },
+        includeMetadata: true
+    })        
 
-// export const searchEmbeddings = async (id: string) => {
-//     try {
-//         const embeddings = getEmbeddings(id)
-//         ;(await embeddings).matches.map((match) => match.)
-//         const data = await pinecone.index('test').retrieve(id)
-//         return data
-//     }
-//     catch (e) {
-//         throw new Error(`Error retrieving embedding`, {
-//             cause: e
-//         })
-//     }
-// }
+    const matches = data.matches.map((match) => {
+        const id = match.id as string
+        const index = idList.indexOf(id)
+        return {
+            ...match,
+            index
+        }
+    })
+
+    if (matches.length === 0) {
+        return searchEmbeddings(idList, promptEmbed, randomID);
+    }
+
+    return matches
+}

@@ -5,18 +5,16 @@ export default async function chunkText(fileName: string): Promise<string[]> {
     const bucket = storage.bucket('pdf-source-storage-bucket')
     
     const file = bucket.file(fileName)
-    const text = (await file.download()).toString()
+    const text = (await file.download())[0].toString()
 
     const textLength = text.length;
-    const chunkSize = Math.ceil(textLength / 1000);
+    const chunkSize = 1000
 
     const storeText : string[] = []
 
-    for (let i = 0; i < chunkSize; i++) {
-        const start = i * chunkSize;
-        const end = (i + 1) * chunkSize;
-        const chunk = text.slice(start, end);
-        storeText.push(chunk)
+    for (let i = 0; i < textLength; i += chunkSize) {
+        const chunk = text.slice(i, i + chunkSize);
+        storeText.push(chunk);
     }
 
     return storeText

@@ -1,7 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 import { randomUUID } from 'crypto';
 import { File } from 'formidable';
-import splitPDF from '../split-pdf';
 
 import { createReadStream } from 'fs';
 import OCRFileContent from './ocr-file-content';
