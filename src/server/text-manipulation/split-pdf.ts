@@ -1,10 +1,15 @@
 import { PDFDocument } from 'pdf-lib';
 import fs from 'fs';
-import { uploadSplitFile } from './upload-file';
-import createFileGCPStorage from './create-file';
+import { uploadSplitFile } from '../gcp/upload-file';
+import createFileGCPStorage from '../gcp/create-file';
 import { randomUUID } from 'crypto';
+import chunkText from './chunk-text';
+import { embedFiles } from '@/utils/openai';
+import { pinecone } from '@/utils/pinecone';
+import {upsertEmbedding} from '../embeddings/pinecone-functions'
+import { embedPrompt } from '../embeddings/embed-prompt';
 
-export default async function splitPDF(inputPDFPath: string) {
+export default async function splitPDF(inputPDFPath: string, prompt: string) {
     const pagesPerSection = 5;
     const randomID = Math.random().toString(36).substring(7);
     try {
@@ -34,8 +39,18 @@ export default async function splitPDF(inputPDFPath: string) {
 
         // Wait for all section uploads to complete before returning
         const files = await Promise.all(sectionPromises);
+
         const fullDocumentText = joinText(files as string[])
-        createFileGCPStorage(randomUUID() + '.txt', fullDocumentText)
+        const documentID = randomUUID()
+        const fileName = `${documentID}.txt`
+        await createFileGCPStorage(fileName, fullDocumentText)
+
+        const chunked = await chunkText(fileName)
+        const embeddings = await embedFiles(chunked)
+        const promptEmbed = await embedPrompt(prompt)
+
+        const upsert = await upsertEmbedding(embeddings, randomID, promptEmbed.data[0]?.embedding as number[])
+        return upsert
 
     } catch (error) {
         console.error('Error splitting PDF:', error);

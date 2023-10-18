@@ -1,9 +1,11 @@
-import uploadFile from "@/server/upload-file"
+import uploadFile from "@/server/gcp/upload-file"
 import { NextApiRequest, NextApiResponse } from "next"
 import formidable from 'formidable'
-import splitPDF from "@/server/split-pdf"
+import splitPDF from "@/server/text-manipulation/split-pdf"
 import {PDFDocument} from 'pdf-lib';
 import fs from 'fs';
+import {openai} from "@/utils/openai"
+import { Pinecone } from '@pinecone-database/pinecone';
 
 interface NextApiRequestWithFormData extends NextApiRequest {
     files: {
@@ -24,13 +26,35 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
     switch (method) {
         case "POST":
         try {
+
+            // const api = await openai.embeddings.create({
+            //     model: "text-embedding-ada-002",
+            //     input: "long test string, this is ",
+            // })
+
+            // const pinecone = new Pinecone({ 
+            // apiKey: process.env.PINECONE_API_KEY as string,
+            // environment: 'gcp-starter'
+            // })
+
+            // const upsert = await pinecone.index('test').upsert([{
+            //     id: '1',
+            //     values: api.data[0]?.embedding as number[],
+            //     metadata: {
+            //         name: 'test',
+            //         description: 'test'
+            //     }
+            // }])
+            
+            // return res.status(200).json({success: upsert})
+
             const form = formidable({})
 
             const data = await new Promise((res, rej) =>{
                 form.parse(req, async (err, fields, files) => {
                     if (err) return rej(err)
                     if (!files.file) return rej("No file provided")
-                    
+                    if (!fields.prompt) return rej("No prompt provided")
                     const file = files.file[0] as formidable.File
 
                     if (file.mimetype === 'application/pdf'){
@@ -39,7 +63,7 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
                         const pdf = PDFDocument.load(pdfData)
 
                         if ((await pdf).getPageCount() > 5){
-                            const split = await splitPDF(file.filepath)
+                            const split = await splitPDF(file.filepath, fields.prompt[0] as string)
                             res(split)
                         }else{
                             const upload = await uploadFile(file)

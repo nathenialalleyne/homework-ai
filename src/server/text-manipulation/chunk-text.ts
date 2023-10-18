@@ -8,11 +8,11 @@ export default async function chunkText(fileName: string): Promise<string[]> {
     const text = (await file.download()).toString()
 
     const textLength = text.length;
-    const chunkSize = Math.ceil(textLength / 10);
+    const chunkSize = Math.ceil(textLength / 1000);
 
     const storeText : string[] = []
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < chunkSize; i++) {
         const start = i * chunkSize;
         const end = (i + 1) * chunkSize;
         const chunk = text.slice(start, end);
@@ -21,3 +21,4 @@ export default async function chunkText(fileName: string): Promise<string[]> {
 
     return storeText
 }
+ 

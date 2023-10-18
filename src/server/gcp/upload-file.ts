@@ -1,7 +1,7 @@
 import { Storage } from '@google-cloud/storage';
 import { randomUUID } from 'crypto';
 import { File } from 'formidable';
-import splitPDF from './split-pdf';
+import splitPDF from '../split-pdf';
 
 import { createReadStream } from 'fs';
 import OCRFileContent from './ocr-file-content';
@@ -11,6 +11,7 @@ const storage = new Storage();
 
 export async function uploadSplitFile(file: Buffer, fileName: string){
   try{
+
     const randomID = randomUUID()
 
     const option = {
