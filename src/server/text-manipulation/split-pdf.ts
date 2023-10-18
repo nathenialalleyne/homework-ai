@@ -9,7 +9,7 @@ import { pinecone } from '@/utils/pinecone';
 import {upsertEmbedding} from '../embeddings/pinecone-functions'
 import { embedPrompt } from '../embeddings/embed-prompt';
 
-export default async function splitPDF(inputPDFPath: string, prompt: string) {
+export default async function splitPDF(inputPDFPath: string): Promise<{fileName: string, fullDocumentText: string, randomID: string} | undefined> {
     const pagesPerSection = 5;
     const randomID = Math.random().toString(36).substring(7);
     try {
@@ -43,15 +43,8 @@ export default async function splitPDF(inputPDFPath: string, prompt: string) {
         const fullDocumentText = joinText(files as string[])
         const documentID = randomUUID()
         const fileName = `${documentID}.txt`
-        await createFileGCPStorage(fileName, fullDocumentText)
 
-        const chunked = await chunkText(fileName)
-        const embeddings = await embedFiles(chunked)
-        const promptEmbed = await embedPrompt(prompt)
-
-        const upsert = await upsertEmbedding(embeddings, randomID, promptEmbed.data[0]?.embedding as number[])
-        return upsert
-
+        return {fileName: fileName, fullDocumentText: fullDocumentText, randomID: randomID}
     } catch (error) {
         console.error('Error splitting PDF:', error);
     }

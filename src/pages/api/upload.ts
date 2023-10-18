@@ -6,6 +6,11 @@ import {PDFDocument} from 'pdf-lib';
 import fs from 'fs';
 import {openai} from "@/utils/openai"
 import { Pinecone } from '@pinecone-database/pinecone';
+import createFileInGCPStorage from "@/server/gcp/create-file";
+import chunkText from "@/server/text-manipulation/chunk-text";
+import { embedFiles } from "@/utils/openai";
+import { upsertEmbedding } from "@/server/embeddings/pinecone-functions";
+import { embedPrompt } from "@/server/embeddings/embed-prompt";
 
 interface NextApiRequestWithFormData extends NextApiRequest {
     files: {
@@ -63,8 +68,18 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
                         const pdf = PDFDocument.load(pdfData)
 
                         if ((await pdf).getPageCount() > 5){
-                            const split = await splitPDF(file.filepath, fields.prompt[0] as string)
-                            res(split)
+                            const split = await splitPDF(file.filepath)
+                            if (!split) return rej("Error splitting PDF")
+
+                            await createFileInGCPStorage(split.fileName, split.fullDocumentText)
+
+                            const chunked = await chunkText(split.fileName)
+                            const embeddings = await embedFiles(chunked)
+                            const promptEmbed = await embedPrompt(fields.prompt[0] as string)
+
+                            const upsert = await upsertEmbedding(embeddings, split.randomID, promptEmbed.data[0]?.embedding as number[])
+                            
+                            res(upsert)
                         }else{
                             const upload = await uploadFile(file)
                             res(upload)
