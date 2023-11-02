@@ -1,28 +1,20 @@
 import { api } from '@/utils/api'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Test from './test'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { v4 as uuidv4 } from 'uuid'
 
 type Props = {}
 
 export default function Profile({ }: Props) {
-    const [file, setFile] = useState<File>()
-    const [convert, setConvert] = useState<string | File>()
-    const [loading, setLoading] = useState<boolean>(false)
-    const [data, setData] = useState<any>()
-
-
+    const router = useRouter()
+    const id = uuidv4()
     return (
-        <div>
-            <h1>Profile</h1>
-            <div>input writing samples</div>
-            <div>
-                <input type='file' onChange={async (e) => {
-                    setFile(e.target.files?.[0] as File)
-                }}></input>
-                {!loading && <button>send</button>}
-                {/* {endpointData && <div>{endpointData}</div>} */}
-            </div>
-            <Test />
-        </div>
-    )
+        <>
+            <button onClick={() => {
+                router.push(`/assignments/${id}`)
+            }}>Create New Assignment</button>
+        </>
+    );
 }

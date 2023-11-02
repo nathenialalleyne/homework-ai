@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 export const databaseRouter = createTRPCRouter({
   addSample: publicProcedure
     .input(z.object({ text: z.string() }))
-    .query(async ({ input,ctx }) => {
+    .mutation(async ({ input,ctx }) => {
         await ctx.db.writingSamples.create({
           data:{
             user: ctx.auth.userId as string,
@@ -34,5 +34,16 @@ export const databaseRouter = createTRPCRouter({
         }
       })
     }),
+  createSource: publicProcedure
+  .input(z.object({ id: z.string(), name: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    const source = await ctx.db.source.create({
+      data:{
+        id: input.id,
+        name: input.name
+      }
+    })
+    return source
+  }),
     
 });

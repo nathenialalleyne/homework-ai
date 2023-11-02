@@ -9,12 +9,16 @@ import { Pinecone, RecordMetadata } from '@pinecone-database/pinecone';
 import createFileInGCPStorage from "@/server/gcp/create-file";
 import chunkText from "@/server/text-manipulation/chunk-text";
 import { embedFiles } from "@/utils/openai";
-import { upsertEmbedding } from "@/server/embeddings/pinecone-functions";
+import { searchEmbeddings, upsertEmbedding } from "@/server/embeddings/pinecone-functions";
 import { embedPrompt } from "@/server/embeddings/embed-prompt";
 import combineDocs from "@/server/text-manipulation/combine-docs";
 import { pinecone } from "@/utils/pinecone";
 import { Embedding } from "openai/resources";
 import promptAssignment from "@/server/gpt/prompt-assignment";
+import { databaseRouter } from "@/server/api/routers/database-operations";
+import { db } from "@/server/db";
+import { AuthContext } from "@/server/api/trpc";
+import { SignedInAuthObject, SignedOutAuthObject, getAuth} from '@clerk/nextjs/server';
 
 interface NextApiRequestWithFormData extends NextApiRequest {
     files: {
@@ -31,7 +35,7 @@ export const config = {
 
 export default async function upload(req: NextApiRequestWithFormData, res: NextApiResponse) {
     const { method } = req
-    
+
     switch (method) {
         case "POST":
         try {
@@ -55,54 +59,56 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
 
                             await createFileInGCPStorage(split.fileName, split.fullDocumentText)
 
+                            databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({id: split.fileName, name: file.originalFilename as string})
+
                             const chunked = await chunkText(split.fileName)
                             const embeddings = await embedFiles(chunked)
 
-                            if (chunked.length > 100){
+
+                            function chunckEmbeddings(){
                                 const maxBatchSize = 100;
                                 const batches = [];
 
                                 for (let i = 0; i < chunked.length; i += maxBatchSize) {
-                                    const chunkBatch = chunked.slice(i, i + maxBatchSize);
+                                    const chunkBatch = embeddings.slice(i, i + maxBatchSize);
                                     batches.push(chunkBatch);
                                 }
 
-                                const allEmbeddings = []
-                                for (const batch of batches) {
-                                    const embeddings = await embedFiles(batch);
-                                    allEmbeddings.push(embeddings);
-                                }
+                                return batches
                             }
+                            
 
                             const promptEmbed = await embedPrompt(fields.prompt[0] as string)
 
-                            const upsert  = await upsertEmbedding(embeddings, split.randomID, promptEmbed.data[0]?.embedding as number[])
-                            // const upserts = await Promise.all(allEmbeddings.map(async (embeddings, index) => {
-                            //     const id = split.randomID + '_' + String(index + 1)
-                            //     const results = await upsertEmbedding(embeddings, split.randomID, promptEmbed.data[0]?.embedding as number[], id)
-                            //     console.log(results)
-                            //     return results
-                            // }))
+                            async function upsertBatch(){
+                                const chunkArr = chunckEmbeddings()
+                                const idList = []
+                                    for (let i=0;i<chunkArr.length;i++){
+                                        const upsert = await upsertEmbedding(chunkArr[i] as Embedding[], `${split?.randomID}_${i}`)
+                                        idList.push(...upsert)
+                                    }
+                                return idList
+                            }
+
+                            const upsert  = embeddings.length > 100 ? await upsertBatch() : await upsertEmbedding(embeddings, split.randomID)
+
+                            console.log('upsert: ', upsert)
+
+                            const search = await searchEmbeddings(upsert, promptEmbed.data[0]?.embedding as number[], split.randomID)
+                            
+                            console.log('search: ' + search)
 
                             const matches: string[] = []
 
-                            for (let i=0;i<upsert.length;i++){
-                                const index = (upsert[i]?.metadata as RecordMetadata).index as number
+                            for (let i=0;i<search.length;i++){
+                                const index = (search[i]?.metadata as RecordMetadata).index as number
                                 matches.push(chunked[index] as string)
                             }
-                            // upsert.forEach((upsert)=>{
-                            //     for (let i=0;i<upsert.length;i++){
-                            //         const index = (upsert[i]?.metadata as RecordMetadata).index as number
-                            //         matches.push(chunked[index] as string)
-                            //     }
-                            // })
-
                             const promptCombination = combineDocs(matches)
 
                             const assignmentFinalPrompt = await promptAssignment(promptCombination, fields.prompt[0] as string)
 
                             res(assignmentFinalPrompt)
-                            // res(matches)
 
                         }else{
                             const upload = await uploadFile(file)

@@ -1,5 +1,5 @@
 import { convertRouter } from "@/server/api/routers/ConvertFile";
-import { databaseRouter } from "./routers/DatabaseOperations";
+import { databaseRouter } from "./routers/database-operations";
 import { createTRPCRouter } from "@/server/api/trpc";
 
 /**

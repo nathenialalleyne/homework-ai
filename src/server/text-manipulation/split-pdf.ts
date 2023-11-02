@@ -1,6 +1,6 @@
 import { PDFDocument } from 'pdf-lib';
 import fs from 'fs';
-import { uploadSplitFile } from '../gcp/upload-file';
+import uploadFile from '../gcp/upload-file';
 import createFileGCPStorage from '../gcp/create-file';
 import { randomUUID } from 'crypto';
 import chunkText from './chunk-text';
@@ -34,10 +34,9 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
             const sectionPDFBytes = await sectionPDF.save();
 
             const sectionFileName = `${randomID}_${sectionIndex}.pdf`;
-            sectionPromises.push(uploadSplitFile(Buffer.from(sectionPDFBytes), sectionFileName));
+            sectionPromises.push(uploadFile(Buffer.from(sectionPDFBytes), sectionFileName));
         }
 
-        // Wait for all section uploads to complete before returning
         const files = await Promise.all(sectionPromises);
 
         const fullDocumentText = joinText(files as string[])

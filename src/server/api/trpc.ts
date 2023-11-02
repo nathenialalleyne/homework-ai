@@ -27,7 +27,7 @@ import { getAuth, SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/
 
 type CreateContextOptions = Record<string, never>;
 
-interface AuthContext {
+export interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject;
 }
 

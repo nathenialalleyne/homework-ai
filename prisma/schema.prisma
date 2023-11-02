@@ -10,15 +10,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
-}
-
 model WritingSamples{
     id Int @id @default(autoincrement())
     user String
@@ -27,4 +18,19 @@ model WritingSamples{
     updatedAt DateTime @updatedAt
 
     @@index([user])
+}
+
+model Assignment{
+    id Int @id @default(autoincrement())
+    user String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    sourceId String
+}
+
+model Source{
+    id String @id
+    name String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

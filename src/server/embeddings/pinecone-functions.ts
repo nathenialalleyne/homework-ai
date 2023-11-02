@@ -3,7 +3,7 @@ import { RecordMetadata, RecordValues, ScoredPineconeRecord } from '@pinecone-da
 import { match } from 'assert';
 import { Embedding } from 'openai/resources';
 
-export const upsertEmbedding = async (embedding: Embedding[], randomID: string, promptEmbed: number[]) => {
+export const upsertEmbedding = async (embedding: Embedding[], randomID: string) => {
     try {
         const idList: string[] = []
         const upsertData = embedding.map((embed, index) => {
@@ -19,7 +19,7 @@ export const upsertEmbedding = async (embedding: Embedding[], randomID: string, 
             };
         });
         await pinecone.index('test').upsert([...upsertData])
-        return await searchEmbeddings(idList, promptEmbed, randomID)
+        return idList
     }
     catch (e) {
         throw new Error(`Error upserting embedding ${e}`, {
@@ -28,10 +28,10 @@ export const upsertEmbedding = async (embedding: Embedding[], randomID: string, 
     }
 }
 
-const searchEmbeddings = async (idList: string[], promptEmbed: number[], randomID: string): Promise<ScoredPineconeRecord<RecordMetadata>[]> => {
+export const searchEmbeddings = async (idList: string[], promptEmbed: number[], randomID: string): Promise<ScoredPineconeRecord<RecordMetadata>[]> => {
     const data = await pinecone.index('test').query({
         vector: promptEmbed,
-        topK: 10,
+        topK: Math.floor(idList.length / 4),
         filter: {
             "reqid": {$eq: randomID}            
         },
