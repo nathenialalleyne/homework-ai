@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 
 export const databaseRouter = createTRPCRouter({
+  
   addSample: publicProcedure
     .input(z.object({ text: z.string() }))
     .mutation(async ({ input,ctx }) => {
@@ -13,6 +14,7 @@ export const databaseRouter = createTRPCRouter({
           }
         })
     }),
+
   getSamples: publicProcedure
     .query(async ({ ctx }) => {
       const samples = await ctx.db.writingSamples.findMany({
@@ -22,6 +24,7 @@ export const databaseRouter = createTRPCRouter({
       })
       return samples
     }),
+
   updateSample: publicProcedure
     .input(z.object({ id: z.number(), text: z.string() }))
     .query(async ({ input,ctx }) => {
@@ -34,6 +37,7 @@ export const databaseRouter = createTRPCRouter({
         }
       })
     }),
+
   createSource: publicProcedure
   .input(z.object({ id: z.string(), name: z.string() }))
   .mutation(async ({ ctx, input }) => {

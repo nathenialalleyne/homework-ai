@@ -4,21 +4,18 @@ import formidable from 'formidable'
 import splitPDF from "@/server/text-manipulation/split-pdf"
 import {PDFDocument} from 'pdf-lib';
 import fs from 'fs';
-import {openai} from "@/utils/openai"
-import { Pinecone, RecordMetadata } from '@pinecone-database/pinecone';
+import { RecordMetadata } from '@pinecone-database/pinecone';
 import createFileInGCPStorage from "@/server/gcp/create-file";
 import chunkText from "@/server/text-manipulation/chunk-text";
 import { embedFiles } from "@/utils/openai";
 import { searchEmbeddings, upsertEmbedding } from "@/server/embeddings/pinecone-functions";
 import { embedPrompt } from "@/server/embeddings/embed-prompt";
 import combineDocs from "@/server/text-manipulation/combine-docs";
-import { pinecone } from "@/utils/pinecone";
 import { Embedding } from "openai/resources";
 import promptAssignment from "@/server/gpt/prompt-assignment";
 import { databaseRouter } from "@/server/api/routers/database-operations";
 import { db } from "@/server/db";
-import { AuthContext } from "@/server/api/trpc";
-import { SignedInAuthObject, SignedOutAuthObject, getAuth} from '@clerk/nextjs/server';
+import { getAuth} from '@clerk/nextjs/server';
 
 interface NextApiRequestWithFormData extends NextApiRequest {
     files: {
@@ -59,7 +56,7 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
 
                             await createFileInGCPStorage(split.fileName, split.fullDocumentText)
 
-                            databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({id: split.fileName, name: file.originalFilename as string})
+                            await databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({id: split.fileName, name: file.originalFilename as string})
 
                             const chunked = await chunkText(split.fileName)
                             const embeddings = await embedFiles(chunked)

@@ -18,10 +18,11 @@ export default function InputSource({ }: Props) {
         (setStage as React.Dispatch<React.SetStateAction<string>>)('source')
     }, [])
 
+    const formData = new FormData()
+    formData.append('file', convert as File)
+    formData.append('prompt', text as string)
+
     const sendToGoogleStorage = async () => {
-        const formData = new FormData()
-        formData.append('file', convert as File)
-        formData.append('prompt', text as string)
         const res = await fetch('/api/upload', {
             method: 'POST',
             body: formData
@@ -48,9 +49,29 @@ export default function InputSource({ }: Props) {
                     }} />
 
                     <button onClick={async () => {
-                        setLoading(true)
-                        setData(await sendToGoogleStorage())
-                        setLoading(false)
+                        // setLoading(true)
+                        // setData(await sendToGoogleStorage())
+                        // setLoading(false)
+                        const id = await fetch('/api/create-job', {
+                            method: 'POST',
+                            body: formData
+                        })
+
+                        const json = await id.json()
+
+                        console.log(json)
+
+                        const interval = setInterval(async () => {
+                            const res = await fetch(`/api/job-status/${json.jobId}`)
+                            const data = await res.json()
+                            console.log(data)
+                        }, 1000)
+
+                        if (json.jobId === 'succeeded' || json.jobId === 'failed') {
+                            clearInterval(interval); // Clear the interval
+                            console.log('Job status reached desired state. Interval cleared.');
+                        }
+
 
                     }}>get text</button>
                 </div>)
