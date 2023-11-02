@@ -52,7 +52,7 @@ export async function uploadSplitFile(file: Buffer, fileName: string){
     }
 }
 
-export default async function uploadFile(file: File) {
+export default async function uploadFile(file: File | Buffer, fileName?: string) {
   try {
 
     const randomID = randomUUID()
@@ -62,12 +62,31 @@ export default async function uploadFile(file: File) {
       
     }
 
-    const upload = await new Promise((resolve, reject) => {
-      createReadStream(file.filepath)
+    async function uploadBuffer(): Promise<string>{
+      return await new Promise((resolve, reject) => {
+      const save = storage.bucket('pdf-source-storage-bucket').file(fileName as string)
+
+      save.save(file as Buffer, {
+          metadata: {
+            contentType: 'application/pdf'
+          },
+          ...option
+        }, (err) => {
+          if (err) {
+            reject(err)
+          }
+          resolve('done')
+        })
+      })
+    }
+
+    async function uploadFile(): Promise<string>{
+      return await new Promise((resolve, reject) => {
+      createReadStream((file as File).filepath)
         .pipe(
-          storage.bucket('pdf-source-storage-bucket').file(file.newFilename as string).createWriteStream({
+          storage.bucket('pdf-source-storage-bucket').file((file as File).newFilename as string).createWriteStream({
             metadata: {
-              contentType: file.mimetype as string
+              contentType: (file as File).mimetype as string
             },
             ...option
 
@@ -78,17 +97,21 @@ export default async function uploadFile(file: File) {
         })
         .on('finish', async () => {
           resolve('done');
-        });
-    });
+        })
+      })
+    }
+
+    const upload = file instanceof Buffer ? await uploadBuffer() : await uploadFile()
 
     if(upload === 'done'){
-      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomID, file.mimetype as string)
+      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + ((file as File).newFilename || fileName ), ((file as File).newFilename || fileName as string), randomID, ((file as File).mimetype as string) || 'application/pdf')
+
+      await deleteFile((file as File).newFilename || fileName as string)
+
       return getFileContent
     }
-    throw new Error('No file content')
+
   } catch (error) {
-    throw new Error('No file content', {
-      cause: error
-    })
+    throw new Error(`Error uploading file to GCP Storage ${error}`)
   }
 }

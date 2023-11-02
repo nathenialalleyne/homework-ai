@@ -4,6 +4,7 @@ import deleteFile from './delete-gcps-files';
 import { randomUUID } from 'crypto';
 
 export default async function OCRFileContent(url: string, fileName: string, randomID: `${string}-${string}-${string}-${string}-${string}`, type: string){
+
     try{ 
       if (type === 'application/pdf'){
         const client = new vision.ImageAnnotatorClient();
@@ -32,7 +33,6 @@ export default async function OCRFileContent(url: string, fileName: string, rand
 
   await operation.promise()
 
-  // const fileContent = await readOCRFileContent(randomID)
   const fileContent = await fetchAndCombineJSONFiles(randomID)
   
   if(!fileContent){
@@ -41,6 +41,7 @@ export default async function OCRFileContent(url: string, fileName: string, rand
 
   return fileContent
 }
+
 if (type === 'image/jpeg' || type === 'image/png'){
   const client = new vision.ImageAnnotatorClient();
   const [result] = await client.documentTextDetection(url);
