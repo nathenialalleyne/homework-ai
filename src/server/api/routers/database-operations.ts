@@ -1,5 +1,6 @@
 import z from 'zod'
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import uploadFile from '@/server/gcp/upload-file';
 
 
 export const databaseRouter = createTRPCRouter({
@@ -10,12 +11,12 @@ export const databaseRouter = createTRPCRouter({
         await ctx.db.writingSamples.create({
           data:{
             user: ctx.auth.userId as string,
-            text: input.text
+            filePath: input.text
           }
         })
     }),
 
-  getSamples: publicProcedure
+  getSample: publicProcedure
     .query(async ({ ctx }) => {
       const samples = await ctx.db.writingSamples.findMany({
         where:{
@@ -48,6 +49,61 @@ export const databaseRouter = createTRPCRouter({
       }
     })
     return source
+  }),
+
+  getSources: publicProcedure
+  .query(async ({ ctx }) => {
+    const sources = await ctx.db.source.findMany()
+    return sources
+  }),
+
+  deleteSource: publicProcedure
+  .input(z.object({ id: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    await ctx.db.source.delete({
+      where:{
+        id: input.id
+      }
+    })
+  }),
+
+  getAssignments: publicProcedure
+  .query(async ({ ctx }) => {
+    const assignments = await ctx.db.assignment.findMany()
+    return assignments
+  }),
+
+  createAssignment: publicProcedure
+  .input(z.object({ name: z.string(), source: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    const assignment = await ctx.db.assignment.create({
+      data:{
+        user: ctx.auth.userId as string,
+        sourceId: input.source
+      }
+    })
+    return assignment
+  }),
+
+  getAssignment: publicProcedure
+  .input(z.object({ id: z.number() }))
+  .query(async ({ ctx, input }) => {
+    const assignment = await ctx.db.assignment.findFirst({
+      where:{
+        id: input.id
+      }
+    })
+    return assignment
+  }),
+
+  deleteAssignment: publicProcedure
+  .input(z.object({ id: z.number() }))
+  .mutation(async ({ ctx, input }) => {
+    await ctx.db.assignment.delete({
+      where:{
+        id: input.id
+      }
+    })
   }),
     
 });

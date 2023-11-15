@@ -58,22 +58,15 @@ export default function InputSource({ }: Props) {
                         })
 
                         const json = await id.json()
-
-                        console.log(json)
-
-                        const interval = setInterval(async () => {
-                            const res = await fetch(`/api/job-status/${json.jobId}`)
-                            const data = await res.json()
-                            console.log(data)
-                        }, 1000)
-
-                        if (json.jobId === 'succeeded' || json.jobId === 'failed') {
-                            clearInterval(interval); // Clear the interval
-                            console.log('Job status reached desired state. Interval cleared.');
-                        }
-
+                        setData(json)
+                        console.log(data)
 
                     }}>get text</button>
+                    <button onClick={async () => {
+                        const res = await fetch(`/api/job-status/${data.worker}`)
+                        const datad = await res.json()
+                        console.log(datad)
+                    }}>check status</button>
                 </div>)
             }
         </div>

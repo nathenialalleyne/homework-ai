@@ -52,7 +52,7 @@ export async function uploadSplitFile(file: Buffer, fileName: string){
     }
 }
 
-export default async function uploadFile(file: File | Buffer, fileName?: string) {
+export default async function uploadFile(file?: File | Buffer, fileName?: string, sample?: boolean, bucket: string = 'pdf-source-storage-bucket') {
   try {
 
     const randomID = randomUUID()
@@ -64,7 +64,7 @@ export default async function uploadFile(file: File | Buffer, fileName?: string)
 
     async function uploadBuffer(): Promise<string>{
       return await new Promise((resolve, reject) => {
-      const save = storage.bucket('pdf-source-storage-bucket').file(fileName as string)
+      const save = storage.bucket(bucket).file(fileName as string)
 
       save.save(file as Buffer, {
           metadata: {
@@ -84,7 +84,7 @@ export default async function uploadFile(file: File | Buffer, fileName?: string)
       return await new Promise((resolve, reject) => {
       createReadStream((file as File).filepath)
         .pipe(
-          storage.bucket('pdf-source-storage-bucket').file((file as File).newFilename as string).createWriteStream({
+          storage.bucket(bucket).file((file as File).newFilename as string).createWriteStream({
             metadata: {
               contentType: (file as File).mimetype as string
             },
@@ -101,14 +101,24 @@ export default async function uploadFile(file: File | Buffer, fileName?: string)
       })
     }
 
-    const upload = file instanceof Buffer ? await uploadBuffer() : await uploadFile()
+    if (sample) {
+      const upload = await uploadFile()
 
-    if(upload === 'done'){
-      const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + ((file as File).newFilename || fileName ), ((file as File).newFilename || fileName as string), randomID, ((file as File).mimetype as string) || 'application/pdf')
+      if(upload === 'done'){
+        return `gs://${bucket}/` + ((file as File).newFilename)
+      }
+    }
 
-      await deleteFile((file as File).newFilename || fileName as string)
+    if (!sample) {
+      const upload = file instanceof Buffer ? await uploadBuffer() : await uploadFile()
 
-      return getFileContent
+      if(upload === 'done'){
+        const getFileContent = await OCRFileContent('gs://pdf-source-storage-bucket/' + ((file as File).newFilename || fileName ), ((file as File).newFilename || fileName as string), randomID, ((file as File).mimetype as string) || 'application/pdf')
+
+        await deleteFile((file as File).newFilename || fileName as string)
+
+        return getFileContent
+      }
     }
 
   } catch (error) {

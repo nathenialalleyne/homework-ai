@@ -43,8 +43,6 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
         const documentID = randomUUID()
         const fileName = `${documentID}.txt`
 
-
-        console.log('fullDocumentText', fullDocumentText)
         return {fileName: fileName, fullDocumentText: fullDocumentText, randomID: randomID}
     } catch (error) {
         console.error(`Error splitting PDF: ${error}`, error);

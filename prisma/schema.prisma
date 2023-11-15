@@ -2,35 +2,46 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
-model WritingSamples{
-    id Int @id @default(autoincrement())
-    user String
-    text String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model WritingSamples {
+  id        Int      @id @default(autoincrement())
+  user      String
+  filePath String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([user])
+  @@index([user])
 }
 
-model Assignment{
-    id Int @id @default(autoincrement())
-    user String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    sourceId String
+model Assignment {
+  id        Int      @id @default(autoincrement())
+  user      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sourceId  String
 }
 
-model Source{
-    id String @id
-    name String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Source {
+  id            String       @id
+  name          String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  UserSources   UserSources? @relation(fields: [userSourcesId], references: [id])
+  userSourcesId Int?
+  vectorPrefix String?
+}
+
+model UserSources {
+  id        Int      @id @default(autoincrement())
+  user      String
+  sources   Source[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

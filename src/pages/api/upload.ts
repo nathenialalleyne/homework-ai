@@ -1,5 +1,5 @@
 import uploadFile from "@/server/gcp/upload-file"
-import { NextApiRequest, NextApiResponse } from "next"
+import { NextApiResponse } from "next"
 import formidable from 'formidable'
 import splitPDF from "@/server/text-manipulation/split-pdf"
 import {PDFDocument} from 'pdf-lib';
@@ -15,14 +15,9 @@ import { Embedding } from "openai/resources";
 import promptAssignment from "@/server/gpt/prompt-assignment";
 import { databaseRouter } from "@/server/api/routers/database-operations";
 import { db } from "@/server/db";
-import { getAuth} from '@clerk/nextjs/server';
+import { getAuth } from '@clerk/nextjs/server';
+import { NextApiRequestWithFormData } from '@/utils/types';
 
-interface NextApiRequestWithFormData extends NextApiRequest {
-    files: {
-        [key: string]: any
-    }
-
-}
 
 export const config = {
   api: {
@@ -89,11 +84,8 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
 
                             const upsert  = embeddings.length > 100 ? await upsertBatch() : await upsertEmbedding(embeddings, split.randomID)
 
-                            console.log('upsert: ', upsert)
-
                             const search = await searchEmbeddings(upsert, promptEmbed.data[0]?.embedding as number[], split.randomID)
                             
-                            console.log('search: ' + search)
 
                             const matches: string[] = []
 

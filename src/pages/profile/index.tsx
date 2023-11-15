@@ -15,6 +15,10 @@ export default function Profile({ }: Props) {
             <button onClick={() => {
                 router.push(`/assignments/${id}`)
             }}>Create New Assignment</button>
+
+            <button onClick={() => {
+                router.push('/sample')
+            }}>Upload Source</button>
         </>
     );
 }
