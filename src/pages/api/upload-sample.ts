@@ -33,10 +33,10 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const doc = await extractor.extract(file.filepath)
             const body = doc.getBody()
 
-            const upload = await createFileInGCPStorage('user-sample-storage', file.newFilename, body, 'text/plain')
+            await createFileInGCPStorage('user-sample-storage', file.newFilename, body, 'text/plain')
             console.log('working')
             await dbRouter.addSample({
-              text: upload
+              text: file.newFilename
             })
             console.log('done')
             resolve(body)

@@ -10,6 +10,12 @@ type Props = {}
 export default function Profile({ }: Props) {
     const router = useRouter()
     const id = uuidv4()
+    const { data, refetch } = api.dbOperations.getSample.useQuery(undefined, { enabled: false })
+    const getText = api.dbOperations.getSampleTextFromStorage.useQuery({ id: data?.[1]?.id.toString() as string, name: data?.[1]?.filePath as string }, { enabled: false })
+
+    useEffect(() => {
+        refetch()
+    }, [])
     return (
         <>
             <button onClick={() => {
@@ -19,6 +25,26 @@ export default function Profile({ }: Props) {
             <button onClick={() => {
                 router.push('/sample')
             }}>Upload Source</button>
+
+            <button onClick={() => {
+                getText.refetch()
+            }}>
+                Get Text
+            </button>
+            <div>
+                {data?.map((item, index) => {
+                    return (
+                        <div key={index}>
+                            <Link href={`/assignments/${item.id}`}>
+                                <div>{item.filePath}</div>
+                            </Link>
+
+                        </div>
+                    )
+                })}
+
+                {getText.data}
+            </div>
         </>
     );
 }

@@ -1,7 +1,7 @@
 import z from 'zod'
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import uploadFile from '@/server/gcp/upload-file';
-
+import donwloadFile from '@/server/gcp/get-file'
+import downloadFile from '@/server/gcp/get-file';
 
 export const databaseRouter = createTRPCRouter({
   
@@ -38,6 +38,19 @@ export const databaseRouter = createTRPCRouter({
         }
       })
     }),
+
+  getSampleTextFromStorage: publicProcedure
+    .input(z.object({ id: z.string(), name: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const source = await ctx.db.source.findFirst({
+        where:{
+          id: input.id,
+          name: input.name
+        }
+      })
+      const text = await downloadFile(input.name, 'user-sample-storage')
+      return text
+  }),
 
   createSource: publicProcedure
   .input(z.object({ id: z.string(), name: z.string() }))
