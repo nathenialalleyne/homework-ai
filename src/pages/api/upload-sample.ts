@@ -34,7 +34,14 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const body = doc.getBody()
 
             await createFileInGCPStorage('user-sample-storage', file.newFilename, body, 'text/plain')
-            console.log('working')
+
+
+            const actionType = fields.actionType?.toString()
+            
+            actionType === 'update' ? await dbRouter.updateSample({
+              id: Number(fields.id),
+              newFileName: file.newFilename
+            }) :
             await dbRouter.addSample({
               text: file.newFilename
             })

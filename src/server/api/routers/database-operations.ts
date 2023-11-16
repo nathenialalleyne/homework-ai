@@ -2,6 +2,8 @@ import z from 'zod'
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import donwloadFile from '@/server/gcp/get-file'
 import downloadFile from '@/server/gcp/get-file';
+import deleteFile from '@/server/gcp/delete-gcps-files';
+import createFileInGCPStorage from '@/server/gcp/create-file';
 
 export const databaseRouter = createTRPCRouter({
   
@@ -11,7 +13,7 @@ export const databaseRouter = createTRPCRouter({
         await ctx.db.writingSamples.create({
           data:{
             user: ctx.auth.userId as string,
-            filePath: input.text
+            fileName: input.text
           }
         })
     }),
@@ -27,14 +29,15 @@ export const databaseRouter = createTRPCRouter({
     }),
 
   updateSample: publicProcedure
-    .input(z.object({ id: z.number(), text: z.string() }))
+    .input(z.object({ id: z.number(), newFileName: z.string() }))
     .query(async ({ input,ctx }) => {
+      
       await ctx.db.writingSamples.update({
         where:{
           id: input.id
         },
         data:{
-          text: input.text
+          fileName: input.newFileName
         }
       })
     }),

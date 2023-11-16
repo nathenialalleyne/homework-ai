@@ -11,7 +11,7 @@ export default function Profile({ }: Props) {
     const router = useRouter()
     const id = uuidv4()
     const { data, refetch } = api.dbOperations.getSample.useQuery(undefined, { enabled: false })
-    const getText = api.dbOperations.getSampleTextFromStorage.useQuery({ id: data?.[1]?.id.toString() as string, name: data?.[1]?.filePath as string }, { enabled: false })
+    const getText = api.dbOperations.getSampleTextFromStorage.useQuery({ id: data?.[data.length - 1]?.id.toString() as string, name: data?.[data.length - 1]?.fileName as string }, { enabled: false })
 
     useEffect(() => {
         refetch()
@@ -23,8 +23,8 @@ export default function Profile({ }: Props) {
             }}>Create New Assignment</button>
 
             <button onClick={() => {
-                router.push('/sample')
-            }}>Upload Source</button>
+                data ? router.push({ pathname: 'sample', query: { update: true } }) : router.push('/sample')
+            }}>{data ? <p>Update Source</p> : <p>Upload Source</p>}</button>
 
             <button onClick={() => {
                 getText.refetch()
@@ -36,7 +36,7 @@ export default function Profile({ }: Props) {
                     return (
                         <div key={index}>
                             <Link href={`/assignments/${item.id}`}>
-                                <div>{item.filePath}</div>
+                                <div>{item.fileName}</div>
                             </Link>
 
                         </div>

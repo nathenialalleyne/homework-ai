@@ -13,7 +13,7 @@ datasource db {
 model WritingSamples {
   id        Int      @id @default(autoincrement())
   user      String
-  filePath String
+  fileName String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

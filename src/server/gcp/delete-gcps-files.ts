@@ -1,9 +1,9 @@
  import { Storage } from "@google-cloud/storage"
 
-export default async function deleteFile(fileName: string){
+export default async function deleteFile(fileName: string, bucketName: string = 'pdf-source-storage-bucket'){
      try{
      const storage = new Storage()
-     const bucket = storage.bucket('pdf-source-storage-bucket')
+     const bucket = storage.bucket(bucketName)
      const file = bucket.file(fileName)
      await file.delete()
      } catch (error){
