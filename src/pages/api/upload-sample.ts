@@ -5,7 +5,9 @@ import { databaseRouter } from "@/server/api/routers/database-operations";
 import { db } from "@/server/db";
 import { getAuth } from '@clerk/nextjs/server';
 import { uploadFile } from '@/server/gcp/upload-sample';
+import createFileInGCPStorage from '@/server/gcp/create-file';
 import * as fs from 'fs/promises';
+import WordExtractor from 'word-extractor';
 
 export const config = {
   api: {
@@ -21,19 +23,23 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             if (err) return reject(err)
             if (!files.file) return reject("No file provided")
 
-            console.log(files.file[0])
-
             const dbRouter = databaseRouter.createCaller({db: db, auth: getAuth(req)})
             const file = files.file[0] as formidable.File
             const buf = await fs.readFile(file.filepath)
-            const upload = await uploadFile('user-sample-storage', buf, file.newFilename, file.mimetype as string)
-            await fs.unlink(file.filepath);
+
+            if (file.mimetype != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return reject("Invalid file type")
+
+            const extractor = new WordExtractor();
+            const doc = await extractor.extract(file.filepath)
+            const body = doc.getBody()
+
+            const upload = await createFileInGCPStorage('user-sample-storage', file.newFilename, body, 'text/plain')
             console.log('working')
             await dbRouter.addSample({
-              text: upload.location
+              text: upload
             })
             console.log('done')
-            resolve(upload.data)
+            resolve(body)
         })
     })
     res.status(200).json({data: data})

@@ -49,7 +49,7 @@ export default async function upload(req: NextApiRequestWithFormData, res: NextA
                             const split = await splitPDF(file.filepath)
                             if (!split) return rej("Error splitting PDF")
 
-                            await createFileInGCPStorage(split.fileName, split.fullDocumentText)
+                            await createFileInGCPStorage('pdf-source-storage-bucket', split.fileName, split.fullDocumentText)
 
                             await databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({id: split.fileName, name: file.originalFilename as string})
 
