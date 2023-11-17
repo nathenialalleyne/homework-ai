@@ -4,6 +4,7 @@ import Test from './test'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid'
+import Tiptap from '@/pages/components/Tiptap'
 
 type Props = {}
 
@@ -12,7 +13,7 @@ export default function Profile({ }: Props) {
     const id = uuidv4()
     const { data, refetch } = api.dbOperations.getSample.useQuery(undefined, { enabled: false })
     const getText = api.dbOperations.getSampleTextFromStorage.useQuery({ id: data?.[data.length - 1]?.id.toString() as string, name: data?.[data.length - 1]?.fileName as string }, { enabled: false })
-
+    const [gotText, setGotText] = useState<boolean>()
     useEffect(() => {
         refetch()
     }, [])
@@ -28,6 +29,7 @@ export default function Profile({ }: Props) {
 
             <button onClick={() => {
                 getText.refetch()
+                setGotText(true)
             }}>
                 Get Text
             </button>
@@ -43,8 +45,11 @@ export default function Profile({ }: Props) {
                     )
                 })}
 
-                {getText.data}
             </div>
+            {getText.data ?
+                <div className='border border-black border-2 ml-2 mr-2 mt-2'>
+                    <Tiptap defaultValue={getText.data} />
+                </div> : null}
         </>
     );
 }
