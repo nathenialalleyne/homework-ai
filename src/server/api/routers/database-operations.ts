@@ -135,5 +135,29 @@ export const databaseRouter = createTRPCRouter({
     })
     return user
   }),
-    
+  
+  getRemainingUserActions: publicProcedure
+  .input(z.object({ id: z.string() }))
+  .query(async ({ ctx, input }) => {
+    const user = await ctx.db.user.findFirst({
+      where:{
+        id: input.id
+      }
+    })
+    return user?.actionsRemaining
+  }),
+
+  updateUser: publicProcedure
+  .input(z.object({ id: z.string(), actionsRemaining: z.number() }))
+  .mutation(async ({ ctx, input }) => {
+    const user = await ctx.db.user.update({
+      where:{
+        id: input.id
+      },
+      data:{
+        actionsRemaining: input.actionsRemaining
+      }
+    })
+    return user
+  }),
 });

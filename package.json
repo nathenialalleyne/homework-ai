@@ -27,6 +27,7 @@
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
+    "@types/stripe-v3": "^3.1.32",
     "@uploadthing/react": "^5.6.1",
     "bee-queue": "^1.6.0",
     "bullmq": "^4.13.2",
