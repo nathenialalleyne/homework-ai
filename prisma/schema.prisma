@@ -45,3 +45,10 @@ model UserSources {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model User {
+  id String @id
+  signUpDate DateTime
+  actionsRemaining Int
+  accountType String
+}

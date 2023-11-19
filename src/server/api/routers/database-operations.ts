@@ -121,5 +121,19 @@ export const databaseRouter = createTRPCRouter({
       }
     })
   }),
+
+  createUser: publicProcedure
+  .input(z.object({ id: z.string(), createdAt: z.date() }))
+  .mutation(async ({ ctx, input }) => {
+    const user = await ctx.db.user.create({
+      data:{
+        id: input.id,
+        signUpDate: input.createdAt, 
+        actionsRemaining: 3,
+        accountType: 'free'
+      }
+    })
+    return user
+  }),
     
 });
