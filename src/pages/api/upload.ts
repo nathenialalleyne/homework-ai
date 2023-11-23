@@ -24,7 +24,7 @@ export const config = {
     bodyParser: false,
   }
 };
-
+//DEPRECATED
 export default async function upload(req: NextApiRequestWithFormData, res: NextApiResponse) {
     const { method } = req
 

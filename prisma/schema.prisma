@@ -11,9 +11,9 @@ datasource db {
 }
 
 model WritingSamples {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   user      String
-  fileName String
+  fileName  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -21,7 +21,7 @@ model WritingSamples {
 }
 
 model Assignment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   user      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,26 +29,18 @@ model Assignment {
 }
 
 model Source {
-  id            String       @id
-  name          String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  UserSources   UserSources? @relation(fields: [userSourcesId], references: [id])
-  userSourcesId Int?
-  vectorPrefix String?
-}
-
-model UserSources {
-  id        Int      @id @default(autoincrement())
-  user      String
-  sources   Source[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userID       String
+  vectorPrefix String
+  gcpFileName  String
 }
 
 model User {
-  id String @id
-  signUpDate DateTime
+  id               String   @id @default(uuid())
+  signUpDate       DateTime
   actionsRemaining Int
-  accountType String
+  accountType      String
 }

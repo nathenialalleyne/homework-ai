@@ -19,7 +19,7 @@ export const upsertEmbedding = async (embedding: Embedding[], randomID: string) 
             };
         });
         await pinecone.index('test').upsert([...upsertData])
-        return idList
+        return {idList, randomID}
     }
     catch (e) {
         throw new Error(`Error upserting embedding ${e}`, {

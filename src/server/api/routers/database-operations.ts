@@ -29,7 +29,7 @@ export const databaseRouter = createTRPCRouter({
     }),
 
   updateSample: publicProcedure
-    .input(z.object({ id: z.number(), newFileName: z.string() }))
+    .input(z.object({ id: z.string(), newFileName: z.string() }))
     .query(async ({ input,ctx }) => {
       
       await ctx.db.writingSamples.update({
@@ -56,12 +56,14 @@ export const databaseRouter = createTRPCRouter({
   }),
 
   createSource: publicProcedure
-  .input(z.object({ id: z.string(), name: z.string() }))
+  .input(z.object({ name: z.string(), vectorPrefix: z.string(), gcpName: z.string() }))
   .mutation(async ({ ctx, input }) => {
     const source = await ctx.db.source.create({
       data:{
-        id: input.id,
-        name: input.name
+        name: input.name,
+        vectorPrefix: input.vectorPrefix,
+        userID: ctx.auth.userId!,
+        gcpFileName: input.gcpName
       }
     })
     return source
@@ -102,7 +104,7 @@ export const databaseRouter = createTRPCRouter({
   }),
 
   getAssignment: publicProcedure
-  .input(z.object({ id: z.number() }))
+  .input(z.object({ id: z.string() }))
   .query(async ({ ctx, input }) => {
     const assignment = await ctx.db.assignment.findFirst({
       where:{
@@ -113,7 +115,7 @@ export const databaseRouter = createTRPCRouter({
   }),
 
   deleteAssignment: publicProcedure
-  .input(z.object({ id: z.number() }))
+  .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     await ctx.db.assignment.delete({
       where:{

@@ -12,6 +12,7 @@ export default function Profile({ }: Props) {
     const id = uuidv4()
     const { data, refetch } = api.dbOperations.getSample.useQuery(undefined, { enabled: false })
     const getText = api.dbOperations.getSampleTextFromStorage.useQuery({ id: data?.[data.length - 1]?.id.toString() as string, name: data?.[data.length - 1]?.fileName as string }, { enabled: false })
+    // const createAssignment = api.dbOperations.createAssignment.useMutation()
     const [gotText, setGotText] = useState<boolean>()
     useEffect(() => {
         refetch()
@@ -19,6 +20,7 @@ export default function Profile({ }: Props) {
     return (
         <>
             <button onClick={() => {
+
                 router.push(`/assignments/${id}`)
             }}>Create New Assignment</button>
 
