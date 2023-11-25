@@ -29,7 +29,7 @@ export default function Sample({ }: Props) {
             <input type="file" onChange={(e) => {
                 if (!e.target.files) return
                 setValid(false)
-                if (e.target.files[0]?.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                if (e.target.files[0]?.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) {
                     setValid(true)
                     setConvert(e.target.files[0])
                 }
@@ -37,9 +37,9 @@ export default function Sample({ }: Props) {
             {valid ? <button onClick={async () => {
                 setLoading(true)
                 if (store && store.length > 0) {
-                    formData.append('id', store?.[store.length - 1]?.id.toString() as string)
-                    formData.append('actionType', 'update')
-                    const get = await fetch('/api/upload-sample', {
+                    // formData.append('id', store?.[store.length - 1]?.id.toString() as string)
+                    // formData.append('actionType', 'update')
+                    const get = await fetch('/api/source/upload-source', {
                         method: 'POST',
                         body: formData
 
@@ -47,7 +47,7 @@ export default function Sample({ }: Props) {
 
                     setData(await get.json())
                     setLoading(false)
-                    router.push('/profile')
+                    // router.push('/profile')
                     return
                 }
                 const get = await fetch('/api/upload-sample', {

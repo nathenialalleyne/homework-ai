@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.24.2",
+    "@formspark/use-formspark": "^0.1.39",
     "@google-cloud/storage": "^7.1.0",
     "@google-cloud/vision": "^4.0.2",
+    "@next/font": "^14.0.3",
     "@pinecone-database/pinecone": "^1.1.1",
     "@prisma/client": "^5.5.2",
     "@t3-oss/env-nextjs": "^0.6.0",
