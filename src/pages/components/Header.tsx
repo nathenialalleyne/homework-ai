@@ -5,10 +5,12 @@ type Props = {}
 
 export default function Header({ }: Props) {
     return (
-        <header className='w-full h-fit pt-6 z-10'>
+        <header className='w-full h-fit pt-6 z-10 pl-64 pr-64'>
+
             <div className='flex justify-between items-center'>
                 <FullLogo className='w-[225px] h-fit' />
-                <ul className='flex justify-center items-center text-white pr-64 gap-6'>
+
+                <ul className='flex justify-center items-center text-white gap-6'>
                     <ul className='flex'>
                         <li className='hover:cursor-pointer'>Features</li>
                         <li className='hover:cursor-pointer pl-6'>Premium</li>
@@ -18,6 +20,7 @@ export default function Header({ }: Props) {
                     </li>
                 </ul>
             </div>
+
         </header>
     )
 }
