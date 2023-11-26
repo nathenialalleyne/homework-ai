@@ -16,9 +16,9 @@ export default function Home() {
   // }, [user])
 
   return (
-    <div className="overflow-hidden relative text-white bg-dark">
+    <div className="overflow-hidden relative text-white bg-dark flex flex-col items-center">
       <Header />
-      <div className="w-screen ">
+      <div className="w-screen mx-auto">
         <LandingHero />
         <HowItWorks />
         {/* <WhyChoose /> */}

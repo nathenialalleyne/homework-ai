@@ -12,7 +12,7 @@ export default function LandingHero({ }: Props) {
 
             <div className='p-4 z-20'>
                 <div className='text-left w-full shrink-0 flex items-center gap-10 flex-col'>
-                    <div className='flex gap-10 flex-col'>
+                    <div className='flex gap-10 flex-col w-[1200px]'>
                         <div className='flex'>
                             <div className='space-y-4 w-full flex flex-col'>
                                 <SectionHeading className='mt-32'>
@@ -35,10 +35,10 @@ export default function LandingHero({ }: Props) {
                             </div>
                         </div>
                         <div className='flex mt-12 w-full justify-between items-center'>
-                            <HeroBox top='95%' bottom='User Satisfaction' />
-                            <HeroBox top='40%' bottom='Time Boost' />
-                            <HeroBox top='98%' bottom='Accurate Style Matching' />
-                            <HeroBox top='100+' bottom='Successful Assignments' />
+                            <HeroBox top='95%' bottom='User Satisfaction' gradient />
+                            <HeroBox top='40%' bottom='Time Boost' gradient/>
+                            <HeroBox top='98%' bottom='Accurate Style Matching' gradient/>
+                            <HeroBox top='100+' bottom='Successful Assignments' gradient/>
                         </div>
                     </div>
                 </div>
