@@ -1,14 +1,14 @@
-import React from 'react'
-import FullLogo from '../images/logo'
+import React from 'react';
+import FullLogo from '../images/logo';
 
-type Props = {}
+type Props = {};
 
 export default function Header({ }: Props) {
     return (
-        <header className='w-full h-fit pt-6 z-10 pl-64 pr-64'>
+        <header className='w-full h-fit pt-6 z-0 pl-4 pr-4 md:pl-64 md:pr-64'>
 
             <div className='flex justify-between items-center'>
-                <FullLogo className='w-[225px] h-fit' />
+                <FullLogo className='max-w-[225px] h-fit flex-shrink-0' />
 
                 <ul className='flex justify-center items-center text-white gap-6'>
                     <ul className='flex'>
@@ -22,5 +22,5 @@ export default function Header({ }: Props) {
             </div>
 
         </header>
-    )
+    );
 }

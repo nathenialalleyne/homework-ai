@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import Header from "@/pages/components/Header";
 import LandingHero from "@/pages/landing/hero";
 import HowItWorks from "@/pages/landing/howitworks";
+import WhyChoose from '@/pages/landing/whychoose';
+import Image from "next/image";
 
 
 export default function Home() {
@@ -16,12 +18,11 @@ export default function Home() {
   return (
     <div className="overflow-hidden relative text-white bg-dark">
       <Header />
-      <div className="w-screen h-screen">
-          <LandingHero />
-          <HowItWorks />
+      <div className="w-screen ">
+        <LandingHero />
+        <HowItWorks />
+        {/* <WhyChoose /> */}
       </div>
-      <div className='absolute z-20 w-[80rem] h-[100rem] -rotate-45 bg-primary rounded-full blur-3xl right-[48rem] bottom-4 opacity-[1%]'></div>
-      <div className='absolute z-20 w-[80rem] h-[100rem] rotate-45 bg-secondary rounded-full blur-3xl left-[48rem] top-4 opacity-[1%]'></div>
     </div>
   );
 }
