@@ -21,7 +21,7 @@ export default function Home() {
       <div className="w-screen mx-auto">
         <LandingHero />
         <HowItWorks />
-        {/* <WhyChoose /> */}
+        <WhyChoose />
       </div>
     </div>
   );
