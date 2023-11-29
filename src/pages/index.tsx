@@ -5,8 +5,8 @@ import Header from "@/pages/components/Header";
 import LandingHero from "@/pages/landing/hero";
 import HowItWorks from "@/pages/landing/howitworks";
 import WhyChoose from '@/pages/landing/whychoose';
-import Image from "next/image";
 import Testimonials from "./landing/testimonals";
+import PricingPlans from "./landing/pricing";
 
 
 export default function Home() {
@@ -24,6 +24,7 @@ export default function Home() {
         <HowItWorks />
         <WhyChoose />
         <Testimonials />
+        <PricingPlans/>
       </div>
     </div>
   );

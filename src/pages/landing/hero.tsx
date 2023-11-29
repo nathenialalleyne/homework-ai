@@ -25,7 +25,7 @@ export default function LandingHero({ }: Props) {
                                     Are you a college or high school student looking to elevate your writing game? Say goodbye to the struggle of endless assignments and welcome a revolutionary solution – GeniusDraft! Our cutting-edge app transforms the way you approach writing tasks, making academic life smoother and more efficient.
                                 </p>
                                 <div className='w-full'>
-                                    <button className='bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer'>
+                                    <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
                                         Sign up for Early Access
                                     </button>
                                 </div>
@@ -44,9 +44,9 @@ export default function LandingHero({ }: Props) {
                 </div>
             </div>
 
-            <Image src='/assets/grid.png' alt='' width={1000} height={1000} className='absolute w-full h-full object-cover z-0' />
-            <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-primary rounded-full blur-3xl right-[40vw] bottom-4 opacity-[1%]'></div>
-            <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-secondary rounded-full blur-3xl left-[40vw] bottom-[4vh] opacity-[2%]'></div>
+            <Image src='/assets/grid.png' alt='' width={1600} height={1600} className='absolute w-full h-[800px] object-cover z-0 bottom-6' />
+            <div className='absolute z-10 w-[80vw] h-[100vh] -rotate-45 bg-primary rounded-full blur-3xl right-[40vw] bottom-4 opacity-[1%]'></div>
+            <div className='absolute z-10 w-[80vw] h-[100vh] -rotate-45 bg-secondary rounded-full blur-3xl left-[40vw] bottom-[4vh] opacity-[2%]'></div>
         </div>
     );
 }

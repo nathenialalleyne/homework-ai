@@ -63,8 +63,8 @@ export default function Testimonials({ }: Props) {
         <div className='flex flex-col space-y-4 p-4 w-1/2'>
           <SectionHeading>TESTIMONIALS</SectionHeading>
           <h2 className='text-4xl font-bold w-full'>What Students Are Saying About GeniusDraft</h2>
-          <p className='font-extralight'>Discover how GeniusDraft has transformed the writing experience for students just like you.</p>
-          <div className='flex gap-2'>
+          <p className='font-extralight'>Discover how GeniusDraft has transformed the writing experience for people just like you.</p>
+          <div className='flex gap-2 z-30'>
             <button
               onClick={handlePrevCard}
               className='w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary text-2xl flex justify-center items-center text-black transition-transform ease-in-out duration-300 hover:scale-110'
@@ -91,7 +91,7 @@ export default function Testimonials({ }: Props) {
         </div>
         
       </div>
-      <Image src='/assets/grid.png' alt='' width={1000} height={1000} className='absolute w-full h-full object-cover z-0 bottom-8 blur-sm' />
+      <Image src='/assets/grid.png' alt='' width={1600} height={1600} className='absolute w-[1600px] h-[600px] object-cover z-0 blur-smf' />
       <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-primary rounded-full blur-3xl right-[40vw] bottom-4 opacity-[1%]'></div>
       <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-secondary rounded-full blur-3xl left-[40vw] bottom-[4vh] opacity-[2%]'></div>
     </div>
