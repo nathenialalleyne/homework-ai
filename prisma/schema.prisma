@@ -23,19 +23,22 @@ model WritingSamples {
 model Assignment {
   id        String   @id @default(uuid())
   user      String
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sourceId  String
+  sources   Source[]
 }
 
 model Source {
-  id           String   @id @default(uuid())
+  id           String      @id @default(uuid())
   name         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   userID       String
   vectorPrefix String
   gcpFileName  String
+  Assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  assignmentId String?
 }
 
 model User {

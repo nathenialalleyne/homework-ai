@@ -7,6 +7,8 @@ import HowItWorks from "@/pages/landing/howitworks";
 import WhyChoose from '@/pages/landing/whychoose';
 import Testimonials from "./landing/testimonals";
 import PricingPlans from "./landing/pricing";
+import CallToAction from "./landing/call-to-action";
+import Footer from "./landing/footer";
 
 
 export default function Home() {
@@ -25,6 +27,8 @@ export default function Home() {
         <WhyChoose />
         <Testimonials />
         <PricingPlans/>
+        <CallToAction />
+        <Footer/>
       </div>
     </div>
   );

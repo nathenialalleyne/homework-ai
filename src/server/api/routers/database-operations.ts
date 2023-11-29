@@ -62,8 +62,8 @@ export const databaseRouter = createTRPCRouter({
       data:{
         name: input.name,
         vectorPrefix: input.vectorPrefix,
-        userID: ctx.auth.userId!,
-        gcpFileName: input.gcpName
+        gcpFileName: input.gcpName,
+        userID: ctx.auth.userId!, 
       }
     })
     return source
@@ -85,6 +85,32 @@ export const databaseRouter = createTRPCRouter({
     })
   }),
 
+  addSourceToAssignment: publicProcedure
+  .input(z.object({ assignmentId: z.string(), sourceId: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    const source = await ctx.db.source.update({
+      where:{
+        id: input.sourceId
+      },
+      data:{
+        assignmentId: input.assignmentId
+      }
+    })
+    return source
+  }),
+
+  getTextFromSource: publicProcedure
+  .input(z.object({ id: z.string() }))
+  .query(async ({ ctx, input }) => {
+    const source = await ctx.db.source.findFirst({
+      where:{
+        id: input.id
+      }
+    })
+    const text = await downloadFile(source!.gcpFileName, 'pdf-source-storage-bucket')
+    return text
+  }),
+
   getAssignments: publicProcedure
   .query(async ({ ctx }) => {
     const assignments = await ctx.db.assignment.findMany()
@@ -96,8 +122,8 @@ export const databaseRouter = createTRPCRouter({
   .mutation(async ({ ctx, input }) => {
     const assignment = await ctx.db.assignment.create({
       data:{
-        user: ctx.auth.userId as string,
-        sourceId: input.source
+        user: ctx.auth.userId!,
+        name: input.name,
       }
     })
     return assignment

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StageContext } from '../context'
+import { api } from '@/utils/api'
 type Props = {}
 
 export default function InputSource({ }: Props) {
@@ -7,6 +8,8 @@ export default function InputSource({ }: Props) {
     const [convert, setConvert] = useState<File>()
     const [data, setData] = useState<any>()
     const [text, setText] = useState<string>()
+
+    const {data: sources, refetch} = api.dbOperations.getSources.useQuery(undefined, {enabled: false})
 
     const setStage = useContext(StageContext)
 
@@ -16,6 +19,7 @@ export default function InputSource({ }: Props) {
 
     useEffect(() => {
         (setStage as React.Dispatch<React.SetStateAction<string>>)('source')
+        refetch()
     }, [])
 
     const formData = new FormData()
