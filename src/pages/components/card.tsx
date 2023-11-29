@@ -11,8 +11,8 @@ type Props = {
 
 export default function Card({ headingText, paragraphText, icon, className }: Props) {
     return (
-        <div className={classNames('w-[400px] bg-gradient-to-br from-primary to-secondary rounded-lg p-[1px] relative overflow-hideen', className)}>
-            <div className='w-full h-full space-y-4 bg-stone-900 rounded-lg p-6'>
+        <div className={classNames('w-1/3 h-[300px] bg-gradient-to-br from-primary to-secondary rounded-lg p-[1px] relative', className)}>
+            <div className='w-full h-full space-y-4 bg-stone-900 rounded-lg p-6 overflow-y-scroll scrollbar'>
                 <div>
                     <Image src={`/assets/${icon}`} alt='' width={50} height={50} />
                 </div>

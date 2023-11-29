@@ -12,7 +12,7 @@ type Props = {};
 export default function HowItWorks({ }: Props) {
     return (
         <div className='w-full h-fit flex mb-8 justify-center tracking-wide'>
-            <div className='w-[1200px] flex flex-col'>
+            <div className='max-w-[1200px] w-full flex flex-col'>
                 <div className='w-full flex justify-center'>
                     <LandingHeading sectionName='HOW IT WORKS' sectionHeadingClassName='mt-8' headingText='Unleash Your Writing Potential with GeniusDraft' paragraphText="Unlocking your personalized writing experience with GeniusDraft is as simple as 1-2-3. Here's a brief overview of our seamless process:" />
                 </div>

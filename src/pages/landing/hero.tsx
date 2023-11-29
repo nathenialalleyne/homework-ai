@@ -12,7 +12,7 @@ export default function LandingHero({ }: Props) {
 
             <div className='p-4 z-20'>
                 <div className='text-left w-full shrink-0 flex items-center gap-10 flex-col'>
-                    <div className='flex gap-10 flex-col w-[1200px]'>
+                    <div className='flex gap-10 flex-col max-w-[1200px] w-full'>
                         <div className='flex'>
                             <div className='space-y-4 w-full flex flex-col'>
                                 <SectionHeading className='mt-32'>

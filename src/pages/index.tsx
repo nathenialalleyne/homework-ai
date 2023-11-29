@@ -6,6 +6,7 @@ import LandingHero from "@/pages/landing/hero";
 import HowItWorks from "@/pages/landing/howitworks";
 import WhyChoose from '@/pages/landing/whychoose';
 import Image from "next/image";
+import Testimonials from "./landing/testimonals";
 
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         <LandingHero />
         <HowItWorks />
         <WhyChoose />
+        <Testimonials />
       </div>
     </div>
   );
