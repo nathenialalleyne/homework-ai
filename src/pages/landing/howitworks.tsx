@@ -19,7 +19,7 @@ export default function HowItWorks({ }: Props) {
                 
                 <div className='flex justify-between gap-20 md:flex-row mt-4'>
 
-                    <div className='w-[35rem] relative z-10'>
+                    <div className='w-[35rem] relative z-10 lg:block sm:hidden'>
                         <BoyImage className='z-[100]' />
                         <DotMatrix className='absolute top-8 -right-8 -z-[100]' />
                         <HeroBox top='10x Faster' bottom='Assignments Completion' className='absolute -bottom-3 -left-8' gradient opauge/>

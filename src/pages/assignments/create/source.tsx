@@ -8,8 +8,9 @@ export default function InputSource({ }: Props) {
     const [convert, setConvert] = useState<File>()
     const [data, setData] = useState<any>()
     const [text, setText] = useState<string>()
-
-    const {data: sources, refetch} = api.dbOperations.getSources.useQuery(undefined, {enabled: false})
+    const [gcpFileName, setGcpFileName] = useState<string>('')
+    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
+    const { data: test, refetch: refetchTest } = api.sourceRouter.useExistingSource.useQuery({ gcpName: 'a9407b3d-6bd3-4f60-8979-87e9ccaef3bf.txt' }, { enabled: false })
 
     const setStage = useContext(StageContext)
 
@@ -40,6 +41,12 @@ export default function InputSource({ }: Props) {
 
     return (
         <div>
+            {sources ? <div> {sources.map((source) => {
+                return <div><button onClick={() => {
+                    setGcpFileName(source.gcpFileName)
+                    refetchTest()
+                }}>{source.name}</button> {source.gcpFileName} {source.vectorPrefix} {source.vectorList}</div>
+            })}</div> : <div>loading</div>}
             {loading ? <div>loading</div> :
                 (<div>
                     <h1>Input Source</h1>
@@ -53,13 +60,19 @@ export default function InputSource({ }: Props) {
                     }} />
 
                     <button onClick={async () => {
+                        console.log(convert)
+
                         // setLoading(true)
                         // setData(await sendToGoogleStorage())
                         // setLoading(false)
-                        const id = await fetch('/api/create-job', {
+                        const id = await fetch('/api/source/upload-source', {
                             method: 'POST',
                             body: formData
                         })
+
+                        if (id.status === 200) {
+                            refetch()
+                        }
 
                         const json = await id.json()
                         setData(json)

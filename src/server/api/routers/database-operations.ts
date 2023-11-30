@@ -56,14 +56,15 @@ export const databaseRouter = createTRPCRouter({
   }),
 
   createSource: publicProcedure
-  .input(z.object({ name: z.string(), vectorPrefix: z.string(), gcpName: z.string() }))
+  .input(z.object({ name: z.string(), vectorPrefix: z.string(), gcpName: z.string(), vectorList: z.string()}))
   .mutation(async ({ ctx, input }) => {
     const source = await ctx.db.source.create({
       data:{
         name: input.name,
         vectorPrefix: input.vectorPrefix,
         gcpFileName: input.gcpName,
-        userID: ctx.auth.userId!, 
+        userID: ctx.auth.userId!,
+        vectorList: input.vectorList
       }
     })
     return source

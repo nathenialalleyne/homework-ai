@@ -1,6 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 
-export default async function createFileInGCPStorage(bucketName: string = 'pdf-source-storage-bucket', filename: string, fileContent: string, contentType?: string) {
+export default async function createFileInGCPStorage(bucketName: string = 'pdf-source-storage-bucket', filename: string, fileContent: string | Buffer, contentType?: string) {
     try{
 
     const options = contentType ? {contentType: contentType} : {}
@@ -19,5 +19,6 @@ export default async function createFileInGCPStorage(bucketName: string = 'pdf-s
         })
     }
 }
+
 
 

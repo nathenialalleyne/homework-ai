@@ -11,10 +11,15 @@ export default function Assignment({ }: Props) {
     const [sample, setSample] = useState<string>()
     // const hello = api.example.hello.useQuery({ text: convert as File }, { enabled: false });
     const createSample = api.dbOperations.addSample.useMutation({})
+    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false })
 
     useEffect(() => {
         console.log(data)
     }, [data])
+
+    useEffect(() => {
+        refetch()
+    }, [])
 
     const sendToGoogleStorage = async () => {
         const formData = new FormData()
@@ -46,6 +51,8 @@ export default function Assignment({ }: Props) {
                 if (!e.target.files) return
                 setConvert(e.target.files[0])
             }} />
+            
+
 
             <input onChange={(e) => {
                 setSample(e.target.value)

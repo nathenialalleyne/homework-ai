@@ -53,3 +53,22 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
 
     return matches
 }
+
+export async function getEmbeddings(vectorPrefix: string, length: number){
+    const embeddings = []
+    const hold = []
+    for (let i=0;i<length;i++){
+        hold.push(`${vectorPrefix}_${i}`)
+    }
+
+    const data = embeddings.push(await pinecone.index('test').fetch(hold))
+
+    console.log(data)
+    console.log(embeddings)
+
+    if (embeddings.length === 0) {
+        return getEmbeddings(vectorPrefix, length);
+    }
+    
+    return embeddings
+}

@@ -91,7 +91,7 @@ export default function Testimonials({ }: Props) {
         </div>
         
       </div>
-      <Image src='/assets/grid.png' alt='' width={1600} height={1600} className='absolute w-[1600px] h-[600px] object-cover z-0 blur-smf' />
+      <Image src='/assets/grid.png' alt='' width={1600} height={1600} className='absolute w-[100rem] h-[37.5rem] object-cover z-0 blur-smf' />
       <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-primary rounded-full blur-3xl right-[40vw] bottom-4 opacity-[1%]'></div>
       <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-secondary rounded-full blur-3xl left-[40vw] bottom-[4vh] opacity-[2%]'></div>
     </div>

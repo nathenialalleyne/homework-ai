@@ -8,6 +8,9 @@ import { embedFiles } from '@/utils/openai';
 import { pinecone } from '@/utils/pinecone';
 import {upsertEmbedding} from '../embeddings/pinecone-functions'
 import { embedPrompt } from '../embeddings/embed-prompt';
+import downloadFile from '../gcp/get-file';
+import deleteFile from '../gcp/delete-gcps-files';
+import OCRFileContent from '../gcp/ocr-file-content';
 
 export default async function splitPDF(inputPDFPath: string): Promise<{fileName: string, fullDocumentText: string, randomID: string} | undefined> {
     const pagesPerSection = 5;
@@ -18,9 +21,11 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
         const totalPages = pdfDoc.getPageCount();
         const numSections = Math.ceil(totalPages / pagesPerSection);
 
-        const sectionPromises = [];
+        const sectionPromises: Array<{ buffer: Buffer, sectionName: string }> = [];
 
+        console.log('running')
         for (let sectionIndex = 0; sectionIndex < numSections; sectionIndex++) {
+            console.log('running ' + sectionIndex + ' times')
             const startPage = sectionIndex * pagesPerSection + 1;
             const endPage = Math.min((sectionIndex + 1) * pagesPerSection, totalPages);
 
@@ -34,14 +39,36 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
             const sectionPDFBytes = await sectionPDF.save();
 
             const sectionFileName = `${randomID}_${sectionIndex}.pdf`;
-            sectionPromises.push(uploadFile(Buffer.from(sectionPDFBytes), sectionFileName));
+
+            console.log(sectionPDFBytes)
+            sectionPromises.push({buffer: Buffer.from(sectionPDFBytes), sectionName: sectionFileName});
         }
 
-        const files = await Promise.all(sectionPromises);
+
+        const runConcurrently = async () => {
+            console.log('running concurrently')
+            const promise = await Promise.all(sectionPromises.map(async (obj: { buffer: Buffer, sectionName: string }) => {
+                console.log('running concurrently ' + obj.sectionName)
+                await createFileGCPStorage('pdf-source-storage-bucket', obj.sectionName, obj.buffer);
+                const fileContent = await OCRFileContent(`gs://pdf-source-storage-bucket/${obj.sectionName}`, obj.sectionName, randomUUID(), 'application/pdf');
+                await deleteFile(obj.sectionName, 'pdf-source-storage-bucket');
+
+                console.log('done concurrently' + obj.sectionName) 
+                return fileContent;
+            }));
+
+            return promise 
+        };
+
+        const files = await runConcurrently();
+
 
         const fullDocumentText = joinText(files as string[])
         const documentID = randomUUID()
         const fileName = `${documentID}.txt`
+
+        console.log('fullDocumentText: ', fullDocumentText)
+        console.log('done')
 
         return {fileName: fileName, fullDocumentText: fullDocumentText, randomID: randomID}
     } catch (error) {

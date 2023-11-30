@@ -36,6 +36,7 @@ model Source {
   updatedAt    DateTime    @updatedAt
   userID       String
   vectorPrefix String
+  vectorList String
   gcpFileName  String
   Assignment   Assignment? @relation(fields: [assignmentId], references: [id])
   assignmentId String?
