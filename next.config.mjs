@@ -17,6 +17,10 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  
+  experimental: {
+    serverMinification: false,
+  },
 };
 
 export default config;
