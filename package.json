@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.24.2",
+    "@defer/client": "^1.14.0",
     "@formspark/use-formspark": "^0.1.39",
     "@google-cloud/storage": "^7.1.0",
     "@google-cloud/vision": "^4.0.2",
