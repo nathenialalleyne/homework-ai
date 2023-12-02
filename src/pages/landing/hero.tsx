@@ -3,6 +3,8 @@ import Image from 'next/image';
 import HeroImage from '@/pages/images/hero-image';
 import HeroBox from '@/pages/components/box';
 import SectionHeading from '../components/section-heading';
+import Link from 'next/link';
+import { SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 type Props = {};
 
@@ -25,9 +27,23 @@ export default function LandingHero({ }: Props) {
                                     Are you a college or high school student looking to elevate your writing game? Say goodbye to the struggle of endless assignments and welcome a revolutionary solution – GeniusDraft! Our cutting-edge app transforms the way you approach writing tasks, making academic life smoother and more efficient.
                                 </p>
                                 <div className='w-full'>
-                                    <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
-                                        Sign up for Early Access
-                                    </button>
+                                    <SignedOut>
+                                        <SignUpButton mode='redirect'>
+                                            <button
+                                                className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
+                                                Try GeniusDraft Today!
+                                            </button>
+                                        </SignUpButton>
+                                    </SignedOut>
+
+                                    <SignedIn>
+                                        <Link href={'/profile'}>
+                                            <button
+                                                className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
+                                                Go to Dashboard
+                                            </button>
+                                        </Link>
+                                    </SignedIn>
                                 </div>
                             </div>
                             <div className='w-full mt-32 sm:hidden lg:block'>
@@ -36,10 +52,10 @@ export default function LandingHero({ }: Props) {
                         </div>
                         <div className='lg:flex mt-12 w-full justify-between items-center sm:grid grid-rows-2 grid-cols-2 place-content-center md:w-fit md:gap-4'>
 
-                                <HeroBox top='95%' bottom='User Satisfaction' gradient />
-                                <HeroBox top='40%' bottom='Time Boost' gradient/>
-                                <HeroBox top='98%' bottom='Accurate Style Matching' gradient/>
-                                <HeroBox top='100+' bottom='Successful Assignments' gradient/>
+                            <HeroBox top='95%' bottom='User Satisfaction' gradient />
+                            <HeroBox top='40%' bottom='Time Boost' gradient />
+                            <HeroBox top='98%' bottom='Accurate Style Matching' gradient />
+                            <HeroBox top='100+' bottom='Successful Assignments' gradient />
 
                         </div>
                     </div>

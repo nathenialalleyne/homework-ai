@@ -8,9 +8,9 @@ export default function InputSource({ }: Props) {
     const [convert, setConvert] = useState<File>()
     const [data, setData] = useState<any>()
     const [text, setText] = useState<string>()
-    const [gcpFileName, setGcpFileName] = useState<string>('')
+    const [gcpFileName, setGcpFileName] = useState<string>()
     const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
-    const { data: test, refetch: refetchTest } = api.sourceRouter.useExistingSource.useQuery({ gcpName: 'a9407b3d-6bd3-4f60-8979-87e9ccaef3bf.txt' }, { enabled: false })
+    const { data: test, refetch: refetchTest } = api.sourceRouter.useExistingSource.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
 
     const setStage = useContext(StageContext)
 
@@ -43,7 +43,8 @@ export default function InputSource({ }: Props) {
         <div>
             {sources ? <div> {sources.map((source) => {
                 return <div><button onClick={() => {
-                    setGcpFileName(source.gcpFileName)
+                    const newGcpFileName = source.gcpFileName
+                    setGcpFileName(newGcpFileName)
                     refetchTest()
                 }}>{source.name}</button> {source.gcpFileName} {source.vectorPrefix} {source.vectorList}</div>
             })}</div> : <div>loading</div>}

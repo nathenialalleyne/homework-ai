@@ -90,12 +90,16 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const random = Math.random().toString(36).substring(7)
 
             if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, pdfData))) return reject('Error uploading to GCP')
+
+            
             const text = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomUUID(), file.mimetype)
             const parsedText = JSON.parse(text as string).responses[0].fullTextAnnotation?.text!
             await deleteFile(file.newFilename)
             const uuid = `${randomUUID()}.txt`
             if (!(await createFileInGCPStorage('pdf-source-storage-bucket', uuid, parsedText))) return reject('Error uploading to GCP')
-            const embeddings = await embedFiles([parsedText]) || reject('Error embedding files')
+
+            const chunked = await chunkText(uuid) || reject('Error chunking text')
+            const embeddings = await embedFiles(chunked) || reject('Error embedding files')
 
             const upsert = await upsertEmbedding(embeddings, random)
             const serializedID = upsert?.idList.join(',')

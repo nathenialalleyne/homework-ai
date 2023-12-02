@@ -17,6 +17,10 @@ export default function Sample({ }: Props) {
     }, [])
 
     useEffect(() => {
+        console.log(valid)
+        console.log(convert)
+    })
+    useEffect(() => {
         console.log(data)
     }, [data])
 
@@ -28,8 +32,11 @@ export default function Sample({ }: Props) {
             <div>Sample</div>
             <input type="file" onChange={(e) => {
                 if (!e.target.files) return
+                console.log(e.target.files[0]?.type)
+                console.log(e.target.files[0])
                 setValid(false)
-                if (e.target.files[0]?.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) {
+                console.log(e.target.files[0]?.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                if (e.target.files[0]?.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
                     setValid(true)
                     setConvert(e.target.files[0])
                 }

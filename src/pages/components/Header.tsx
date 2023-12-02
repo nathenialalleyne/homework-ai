@@ -1,5 +1,7 @@
 import React from 'react';
 import FullLogo from '../images/logo';
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 type Props = {};
 
@@ -15,8 +17,26 @@ export default function Header({ }: Props) {
                         <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0 md:mr-6'>Features</li>
                         <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0'>Premium</li>
                     </ul>
+                    <SignedOut>
+                        <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-24 h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
+                                <SignInButton mode='redirect'>
+                                    <button className='pt-2 pb-2 pl-4 pr-4'>Sign In</button>
+                                </SignInButton>
+                        </li>
+                    </SignedOut>
+                    
                     <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-24 h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
-                        <button className='pt-2 pb-2 pl-4 pr-4'>Sign Up</button>
+                        <SignedOut>
+                            <SignUpButton mode='redirect'>
+                                <button className='pt-2 pb-2 pl-4 pr-4'>Sign Up</button>
+                            </SignUpButton>
+                        </SignedOut>
+
+                        <SignedIn>
+                            <Link href={'/profile'}>
+                                <button className='pt-2 pb-2 pl-4 pr-4 whitespace-nowrap'>Home</button>
+                            </Link>
+                        </SignedIn>
                     </li>
                 </ul>
             </div>

@@ -29,9 +29,10 @@ export const upsertEmbedding = async (embedding: Embedding[], randomID: string) 
 }
 
 export const searchEmbeddings = async (idList: string[], promptEmbed: number[], randomID: string): Promise<ScoredPineconeRecord<RecordMetadata>[]> => {
+
     const data = await pinecone.index('test').query({
         vector: promptEmbed,
-        topK: Math.floor(idList.length / 4),
+        topK: idList.length,
         filter: {
             "reqid": {$eq: randomID}            
         },
@@ -41,6 +42,7 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
     const matches = data.matches.map((match) => {
         const id = match.id as string
         const index = idList.indexOf(id)
+        console.log(match.score)
         return {
             ...match,
             index
@@ -51,7 +53,17 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
         return searchEmbeddings(idList, promptEmbed, randomID);
     }
 
-    return matches
+    const totalScore = matches.reduce((sum, match) => sum + match?.score!, 0);
+    const averageScore = totalScore / matches.length;
+
+
+    const percentageBelowAverage = 0.4; 
+
+    const belowAverageThreshold = averageScore * (1 - percentageBelowAverage);
+
+    const potentiallyRelevantMatches = matches.filter(match => match?.score! >= belowAverageThreshold);
+
+    return potentiallyRelevantMatches
 }
 
 export async function getEmbeddings(vectorPrefix: string, length: number){
