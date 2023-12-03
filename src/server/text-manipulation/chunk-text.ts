@@ -1,7 +1,8 @@
 import { Storage } from "@google-cloud/storage";
+import client from "@/utils/google";
 
-export default async function chunkText(fileName: string): Promise<string[]> {
-    const storage = new Storage()
+export default async function chunkText(storage: Storage , fileName: string): Promise<string[]> {
+    storage ? null : storage = new Storage({projectId: 'altrai', authClient: client})
     const bucket = storage.bucket('pdf-source-storage-bucket')
     
     const file = bucket.file(fileName)

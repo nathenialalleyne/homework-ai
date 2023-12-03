@@ -71,8 +71,10 @@ export default function InputSource({ }: Props) {
                             body: formData
                         })
 
+                        console.log(id)
+
                         if (id.status === 200) {
-                            refetch()
+                            
                         }
 
                         const json = await id.json()
