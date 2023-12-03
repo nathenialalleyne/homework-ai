@@ -9,7 +9,8 @@ import { databaseRouter } from '@/server/api/routers/database-operations'
 import { upsertEmbedding } from '@/server/embeddings/pinecone-functions'
 import { Embedding } from 'openai/resources'
 import { db } from '@/server/db'
-import { getAuth } from '@clerk/nextjs/dist/types/server-helpers.server'
+import { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/dist/types/server'
+import { RequestLike } from '@clerk/nextjs/dist/types/server/types'
 import redisClient from '@/utils/redis'
 
 type Props = {
@@ -17,9 +18,10 @@ type Props = {
     split: {fileName: string, fullDocumentText: string, randomID: string}
     originalFileName: string,
     jobID: `${string}-${string}-${string}-${string}-${string}`
+    getAuth: (req: RequestLike) => SignedInAuthObject | SignedOutAuthObject
 }
 
-async function uploadBigPDF({ req, split, originalFileName, jobID}: Props){
+async function uploadBigPDF({ req, split, originalFileName, jobID, getAuth}: Props){
     return new Promise(async (resolve, reject) => {
         
         redisClient.set(jobID, 'processing')

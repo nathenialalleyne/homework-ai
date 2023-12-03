@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
 
             const jobID = randomUUID()
             assignOptions(uploadBigPDF, {metadata: {jobID: jobID}})
-            await uploadBigPDF({req: req, split: split, originalFileName: file.originalFilename!, jobID: jobID})
+            await uploadBigPDF({req: req, split: split, originalFileName: file.originalFilename!, jobID: jobID, getAuth: getAuth})
 
             return resolve({jobID: jobID})
             
