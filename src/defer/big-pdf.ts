@@ -12,9 +12,10 @@ import { db } from '@/server/db'
 import { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/dist/types/server'
 import { RequestLike } from '@clerk/nextjs/dist/types/server/types'
 import redisClient from '@/utils/redis'
+import { atob } from 'buffer'
 
 type Props = {
-    req: NextApiRequestWithFormData,
+    req: string,
     split: {fileName: string, fullDocumentText: string, randomID: string}
     originalFileName: string,
     jobID: `${string}-${string}-${string}-${string}-${string}`
@@ -23,7 +24,7 @@ type Props = {
 
 async function uploadBigPDF({ req, split, originalFileName, jobID, getAuth}: Props){
     return new Promise(async (resolve, reject) => {
-        
+        req = atob(req)
         redisClient.set(jobID, 'processing')
 
         const storage = new Storage({projectId: 'altrai', authClient: await client})
@@ -57,10 +58,12 @@ async function uploadBigPDF({ req, split, originalFileName, jobID, getAuth}: Pro
         }
 
         const upsert = embeddings.length > 100 ? await upsertBatch() : await upsertEmbedding(embeddings, split.randomID)
-
+        console.log('upsertring')
         if (!upsert) return reject('Error upserting embeddings')
 
         const serializedID = upsert?.idList.join(',')
+
+        console.log('adding to db')
 
         await databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({name: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split.fileName, vectorList: serializedID})
 

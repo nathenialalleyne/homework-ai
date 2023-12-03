@@ -16,7 +16,8 @@ import { google } from '@google-cloud/vision/build/protos/protos';
 import { randomUUID } from 'crypto';
 import OCRFileContent from '@/server/gcp/ocr-file-content';
 import deleteFile from '@/server/gcp/delete-gcps-files';
-import { assignOptions } from '@defer/client/index';
+import { assignOptions } from '@defer/client';
+import { btoa } from 'buffer';
 
 export const config = {
   api: {
@@ -50,7 +51,7 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
 
             const jobID = randomUUID()
             assignOptions(uploadBigPDF, {metadata: {jobID: jobID}})
-            await uploadBigPDF({req: req, split: split, originalFileName: file.originalFilename!, jobID: jobID, getAuth: getAuth})
+            await uploadBigPDF({req: btoa(req.body), split: split, originalFileName: file.originalFilename!, jobID: jobID, getAuth: getAuth})
 
             return resolve({jobID: jobID})
             
