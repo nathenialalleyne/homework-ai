@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "altrai",
+  "private_key_id": "9ada4a02efd77a35062282ec67a570d4f2b4a4bc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCuEYXtYsumFoYA\nYdM1/hR8znrMXOOETZCs++i0ueM38DueHGolfohmdvS1CcqPQWUkUSgWJrJruTF9\nQ5e+NWRN/aABVdrxp+iWMmiAKrWaYGUJmlwc9HfK/VxtdAWKEDgNLoH/pQqK8hHC\n95/oR3eun69R0Yrl1l0+r8WGvghrXJKOiKUfCEkhaSRW2cFUafkqP0/VKuOimL8i\nA7fKO2J0LhnBgECXW20z34ZJupDImOJ1l7I+o4/e48v8a8XchbLI6Zyx+yWp9wlx\nVZXHqgFk/wPAmugXcloWVCRtTzxXat057RvsvtIsR9plU2bjgW8cbDXbzUEmnyFq\n3NI8J3qzAgMBAAECggEABDGE4J6oLvn3mXZsha5Mz7g+X2z/ctZW3Wv7g7BqEmoV\nrZib+rJCgUwYAhfYdZIK6JCR9Cf+KrfdQtodg5C6uAxGTgdDoohmgzPMrlsZC+fg\nQevM5fUCa8qlxDdEKOV8zDMqIOlYyIHOFBHYxtpDPlriI4j2R9TduIm4gFH/Vu1r\nkBt02SpN5CDL4CX76VW2am9HCOwGdkEyibcwKkzFCK/PWhbhu+TpQA1r2CGO3pZb\noCa/SVLKl2Hucdhg6BPsJPhfJJqF8i7ywSNm2OR7L+i2jyR6fisc+/+VY5qboUsI\nYaBDcyFtyfli1uQx4HFF0idZPqZW34NxqD8OoTt4wQKBgQDyIzGPSA0zMbYAxr29\nsZHUbHiDbL6QmHPqgWjNWCJyILsMAYnSIXivrktHoi837p4T/wrSzXoo5LjqLjHJ\n3O3+BwsGzHJkDS/0Ge7SFtkfm/Lz0xt5Xc1TbQEpj2mqZNSwYriCCKKkwxTgHJuN\nLoK9jENAJ4XK3gKCM/7zDy1MQQKBgQC4CLLkxWrZOVZWWa2xG0xHofbhIVATbvH6\nSUDdEhdRNvbYJnRWty36rvPKvUK0vLPjN1WXaUIP53aM/GKrQdtI1xSyVH7bfr5y\nGfM9CRrOpJuQ1FUJY0IXv+fEKp5uex0GR0c8S+cPl4tSqYNhSsQCKUBhEk9EsO2B\nL8dToUXZ8wKBgQCVgxuwAGp+KPzb/9vbTNDiHNRROo101V4F+EBRQ1GJrSIyKKUE\nRjyyJeo/4ipL3CBp8nqpbc03gPuZRkrh/XRK/ehWG1mq4+WvUXAA87C/7tiWq8z0\nJPKKx+0Gz5IMb9RQ0bRiPpjHKdozBBcclxKNnhVMgNsBSBK+eQK87KsowQKBgQCO\nIbHAO7Qc1kqW4CXkTbfo7u7Tyr2kdKAP9DlTQ6Ccib21DGX3fvvUyv/gSbFWExM/\nXcIN8S4jSFln45h0uaUZKXuDivx6mvWM+/u+3ORGSh0XitWuLWmjHARsnZnEq/Kr\noasjp19pzFm+2spr/qlJHgDpt5Fe9OJJTtQ8A6cF/wKBgQDWkDCSJWqDayto5vql\n0Lqu1P4qeBTGv0Fk66W4cmj0ohpshsR4XTMkn//AAgT5+McrgnRDOriWpvKjOG4H\nOd4T/5/zlYlpTx2cfMYM+CGzvvsgBqzqytN5gxd8CPC5tZ0+03kVjZeIwjc87eg2\nFNswF/zl0px0/7WJoKWQR77RVw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "defer-and-vercel@altrai.iam.gserviceaccount.com",
+  "client_id": "115897606959908245366",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/defer-and-vercel%40altrai.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

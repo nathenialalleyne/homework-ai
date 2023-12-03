@@ -18,6 +18,8 @@ import { randomInt, randomUUID } from 'crypto';
 import OCRFileContent from '@/server/gcp/ocr-file-content';
 import deleteFile from '@/server/gcp/delete-gcps-files';
 import uploadAndGetTextFromSource from '@/defer/test'
+import CircularJSON from 'circular-json';
+import textGCP from '@/defer/test';
 
 export const config = {
   api: {
@@ -26,8 +28,25 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequestWithFormData, res: NextApiResponse){
+  
+  await textGCP()
+  // const form = formidable({})
+  // const formPromise = await new Promise(async (resolve, reject) => {
+  //   form.parse(req, async (err, fields, files) => {
+  //     if (err) return reject(err)
+  //     if (!files.file) return reject('No file uploaded')
 
-  await uploadAndGetTextFromSource(req, res)
+  //     const file = files.file[0] as formidable.File
+  //     return resolve({files: JSON.stringify(file), fields})
+  //   })
+  // })
+
+  // console.log(JSON.stringify(formPromise))
+  // console.log(CircularJSON.stringify(formPromise))
+
+
+  //   // Send the serialized request to the third-party service
+  //   await uploadAndGetTextFromSource(CircularJSON.parse(CircularJSON.stringify(formPromise)), res);
 
   res.status(200).json({message: 'Success'})
 

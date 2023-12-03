@@ -25,6 +25,9 @@ export default function Assignment({ }: Props) {
         const formData = new FormData()
         formData.append('file', convert as File)
         formData.append('prompt', text as string)
+
+        formData.
+
         const res = await fetch('/api/upload', {
             method: 'POST',
             body: formData
