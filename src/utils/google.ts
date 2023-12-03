@@ -11,6 +11,6 @@ const GoogleAuthOptions = () => {
     })
 }
     
-const client = await GoogleAuthOptions().getClient()
+const client = GoogleAuthOptions().getClient()
 
 export default client

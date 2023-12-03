@@ -24,7 +24,7 @@ async function uploadBigPDF({ req, split, originalFileName, jobID}: Props){
         
         redisClient.set(jobID, 'processing')
 
-        const storage = new Storage({projectId: 'altrai', authClient: client})
+        const storage = new Storage({projectId: 'altrai', authClient: await client})
 
         const chunked = await chunkText(storage, split.fileName) || reject('Error chunking text')
         const embeddings = await embedFiles(chunked) || reject('Error embedding files')
