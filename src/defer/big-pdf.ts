@@ -65,7 +65,7 @@ async function uploadBigPDF({ req, split, originalFileName, jobID}: Props){
 
         console.log('adding to db')
 
-        await databaseRouter.createCaller({db: db, auth: getAuth(req)}).createSource({name: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split.fileName, vectorList: serializedID})
+        await databaseRouter.createCaller({db: db, auth: getAuth(req as RequestLike)}).createSource({name: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split.fileName, vectorList: serializedID})
 
         redisClient.set(jobID, 'complete', 'EX', 60)
 
