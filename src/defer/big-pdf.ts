@@ -13,16 +13,16 @@ import { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/dist/type
 import { RequestLike } from '@clerk/nextjs/dist/types/server/types'
 import redisClient from '@/utils/redis'
 import { atob } from 'buffer'
+import { getAuth } from '@clerk/nextjs/server';
 
 type Props = {
     req: string,
     split: {fileName: string, fullDocumentText: string, randomID: string}
     originalFileName: string,
     jobID: `${string}-${string}-${string}-${string}-${string}`
-    getAuth: (req: RequestLike) => SignedInAuthObject | SignedOutAuthObject
 }
 
-async function uploadBigPDF({ req, split, originalFileName, jobID, getAuth}: Props){
+async function uploadBigPDF({ req, split, originalFileName, jobID}: Props){
     return new Promise(async (resolve, reject) => {
         req = atob(req)
         redisClient.set(jobID, 'processing')
