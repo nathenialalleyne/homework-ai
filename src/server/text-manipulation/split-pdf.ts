@@ -59,13 +59,14 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
         const files = await runConcurrently();
 
 
-
         const fullDocumentText = joinText(files as string[])
         const documentID = randomUUID()
         const fileName = `${documentID}.txt`
 
         console.log('fullDocumentText: ', fullDocumentText)
         console.log('done')
+
+        await createFileGCPStorage('pdf-source-storage-bucket', fileName, fullDocumentText);
 
         return {fileName: fileName, fullDocumentText: fullDocumentText, randomID: randomID}
     } catch (error) {
