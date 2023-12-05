@@ -12,12 +12,11 @@ import downloadFile from '../gcp/get-file';
 import deleteFile from '../gcp/delete-gcps-files';
 import OCRFileContent from '../gcp/ocr-file-content';
 
-export default async function splitPDF(inputPDFPath: string): Promise<{fileName: string, fullDocumentText: string, randomID: string} | undefined> {
+export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: string, fullDocumentText: string, randomID: string} | undefined> {
     const pagesPerSection = 5;
     const randomID = Math.random().toString(36).substring(7);
     try {
-        const inputPDFBuffer = await fs.promises.readFile(inputPDFPath);
-        const pdfDoc = await PDFDocument.load(inputPDFBuffer);
+        const pdfDoc = await PDFDocument.load(inputPDF);
         const totalPages = pdfDoc.getPageCount();
         const numSections = Math.ceil(totalPages / pagesPerSection);
 
@@ -48,12 +47,9 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
         const runConcurrently = async () => {
             console.log('running concurrently')
             const promise = await Promise.all(sectionPromises.map(async (obj: { buffer: Buffer, sectionName: string }) => {
-                console.log('running concurrently ' + obj.sectionName)
                 await createFileGCPStorage('pdf-source-storage-bucket', obj.sectionName, obj.buffer);
                 const fileContent = await OCRFileContent(`gs://pdf-source-storage-bucket/${obj.sectionName}`, obj.sectionName, randomUUID(), 'application/pdf');
                 await deleteFile(obj.sectionName, 'pdf-source-storage-bucket');
-
-                console.log('done concurrently' + obj.sectionName) 
                 return fileContent;
             }));
 
@@ -61,6 +57,7 @@ export default async function splitPDF(inputPDFPath: string): Promise<{fileName:
         };
 
         const files = await runConcurrently();
+
 
 
         const fullDocumentText = joinText(files as string[])

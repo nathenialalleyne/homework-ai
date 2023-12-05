@@ -43,15 +43,11 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
           const pdf = await PDFDocument.load(pdfData)
 
           if (pdf.getPageCount() > 5){
-            const split = await splitPDF(file.filepath)
-            if (!split) return reject('Error splitting PDF')
-
-
-            if (!(await createFileInGCPStorage('pdf-source-storage-bucket', split.fileName, split.fullDocumentText))) return reject('Error uploading to GCP')
-
+            if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, pdfData, 'application/pdf'))) return reject('Error uploading to GCP')
             const jobID = randomUUID()
             assignOptions(uploadBigPDF, {metadata: {jobID: jobID}})
-            await uploadBigPDF({req: btoa(req.body), split: split, originalFileName: file.originalFilename!, jobID: jobID})
+            
+            await uploadBigPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID})
 
             return resolve({jobID: jobID})
             

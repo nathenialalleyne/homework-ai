@@ -14,9 +14,9 @@ export default function InputSource({ }: Props) {
 
     const setStage = useContext(StageContext)
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
+    // useEffect(() => {
+    //     console.log(data)
+    // }, [data])
 
     useEffect(() => {
         (setStage as React.Dispatch<React.SetStateAction<string>>)('source')
@@ -71,15 +71,23 @@ export default function InputSource({ }: Props) {
                             body: formData
                         })
 
-                        console.log(id)
+                        const json: { message: string, jobID: string } = await id.json()
 
-                        if (id.status === 200) {
-                            
-                        }
+                        console.log(json)
+                        // const interval = setInterval(async () => {
+                        //     console.log('checking')
+                        //     const res = await fetch(`/api/job-status/${json.jobID}`)
+                        //     const datad = await res.json()
+                        //     console.log(datad)
+                        //     if (datad.status === 'complete') {
+                        //         setData(datad)
+                        //         clearInterval(interval)
+                        //     }
+                        // }, 1000)
 
-                        const json = await id.json()
+
+
                         setData(json)
-                        console.log(data)
 
                     }}>get text</button>
                     <button onClick={async () => {
