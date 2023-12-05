@@ -1,10 +1,11 @@
 import { Storage } from '@google-cloud/storage';
+import client from '@/utils/google'
 
 export default async function createFileInGCPStorage(bucketName: string = 'pdf-source-storage-bucket', filename: string, fileContent: string | Buffer, contentType?: string) {
     try{
 
     const options = contentType ? {contentType: contentType} : {}
-    const storage = new Storage();
+    const storage = new Storage({projectId: 'altrai', authClient: await client})
     const bucket = storage.bucket(bucketName);
 
     const file = bucket.file(filename);
