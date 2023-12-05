@@ -2,13 +2,15 @@ import vision from '@google-cloud/vision';
 import { Storage } from '@google-cloud/storage';
 import deleteFile from './delete-gcps-files';
 import { randomUUID } from 'crypto';
+ import client from '@/utils/google'
+import { JSONClient } from 'google-auth-library/build/src/auth/googleauth';
 
 export default async function OCRFileContent(url: string, fileName: string, randomID: `${string}-${string}-${string}-${string}-${string}`, type: string){
 
     try{ 
       if (type === 'application/pdf'){
-        const client = new vision.ImageAnnotatorClient();
-        const [operation] = await client.asyncBatchAnnotateFiles({
+        const visionClient = new vision.ImageAnnotatorClient({projectId: 'altrai', authClient: await client as JSONClient});
+        const [operation] = await visionClient.asyncBatchAnnotateFiles({
     requests: [
       {
         inputConfig: {
@@ -43,8 +45,8 @@ export default async function OCRFileContent(url: string, fileName: string, rand
 }
 
 if (type === 'image/jpeg' || type === 'image/png'){
-  const client = new vision.ImageAnnotatorClient();
-  const [result] = await client.documentTextDetection(url);
+  const visionClient = new vision.ImageAnnotatorClient({projectId: 'altrai', authClient: await client as JSONClient});
+  const [result] = await visionClient.documentTextDetection(url);
 
   deleteFile(fileName)
 
