@@ -32,7 +32,7 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
 
     const data = await pinecone.index('test').query({
         vector: promptEmbed,
-        topK: idList.length,
+        topK: (Math.floor(idList.length/2)),
         filter: {
             "reqid": {$eq: randomID}            
         },
@@ -61,7 +61,7 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
 
     const belowAverageThreshold = averageScore * (1 - percentageBelowAverage);
 
-    const potentiallyRelevantMatches = matches.filter(match => match?.score! >= belowAverageThreshold);
+    const potentiallyRelevantMatches = matches.filter(match => match?.score! >= averageScore);
 
     return potentiallyRelevantMatches
 }

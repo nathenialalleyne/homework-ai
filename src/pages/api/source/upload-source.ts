@@ -36,8 +36,10 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
       form.parse(req, async (err, fields, files) => {
         if (err) return reject(err)
         if (!files.file) return reject('No file uploaded')
+        if (!fields.prompt) return reject('No prompt uploaded')
 
         const file = files.file[0] as formidable.File
+        const prompt = fields.prompt?.[0] as string
 
         if (file.mimetype == 'application/pdf'){
 
@@ -49,7 +51,7 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const jobID = randomUUID()
             assignOptions(uploadBigPDF, {metadata: {jobID: jobID}})
             
-            await uploadBigPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID})
+            await uploadBigPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID, prompt: prompt})
 
             return resolve({jobID: jobID})
             

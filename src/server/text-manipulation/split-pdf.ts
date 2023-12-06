@@ -40,12 +40,14 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
             sectionPromises.push({buffer: Buffer.from(sectionPDFBytes), sectionName: sectionFileName});
         }
 
+        console.log(sectionPromises)
 
         const runConcurrently = async () => {
             const promise = await Promise.all(sectionPromises.map(async (obj: { buffer: Buffer, sectionName: string }) => {
                 await createFileGCPStorage('pdf-source-storage-bucket', obj.sectionName, obj.buffer);
                 const fileContent = await OCRFileContent(`gs://pdf-source-storage-bucket/${obj.sectionName}`, obj.sectionName, randomUUID(), 'application/pdf');
                 await deleteFile(obj.sectionName, 'pdf-source-storage-bucket');
+
                 return fileContent;
             }));
 
@@ -54,10 +56,16 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
 
         const files = await runConcurrently();
 
+        console.log('finished running concurrently')
+
 
         const fullDocumentText = joinText(files as string[])
+        console.log(fullDocumentText)
         const documentID = randomUUID()
+        console.log(documentID)
         const fileName = `${documentID}.txt`
+        console.log(fileName)
+
 
         await createFileGCPStorage('pdf-source-storage-bucket', fileName, fullDocumentText);
 
@@ -68,21 +76,27 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
 }
 
 function joinText(texts: string[]) {
-    const seperateArray = (array: any[]) => {
-        const newArray = []
+    const separateArray = (array: string[]) => {
+        const newArray = [];
         for (let p in array) {
-            newArray.push(JSON.parse(array[p]))
+            newArray.push(JSON.parse(array?.[p]!));
         }
-        return newArray
-    }
+        return newArray;
+    };
 
-    const parsedArray = seperateArray(texts)
+    const parsedArray = separateArray(texts);
 
     const fullText = parsedArray.map((item) => {
-        return item.responses[0].fullTextAnnotation.text.replace(/\n/g, ' ');
-    })
+        if (item?.responses && item.responses[0]?.fullTextAnnotation) {
+            return item.responses[0].fullTextAnnotation.text.replace(/\n/g, ' ');
+        }
+        
+        return '';
+    });
 
-    const joined = fullText.join(' ')
-    
-    return joined
+    console.log(fullText);
+
+    const joined = fullText.join(' ');
+
+    return joined;
 }

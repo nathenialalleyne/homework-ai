@@ -3,19 +3,22 @@ import { Storage } from '@google-cloud/storage'
 import client from '@/utils/google'
 import chunkText from '@/server/text-manipulation/chunk-text'
 import { embedFiles } from '@/utils/openai'
-import { upsertEmbedding } from '@/server/embeddings/pinecone-functions'
+import { searchEmbeddings, upsertEmbedding } from '@/server/embeddings/pinecone-functions'
 import { Embedding } from 'openai/resources'
 import redisClient from '@/utils/redis'
 import splitPDF from '@/server/text-manipulation/split-pdf'
 import deleteFile from '@/server/gcp/delete-gcps-files'
+import { embedPrompt } from '@/server/embeddings/embed-prompt'
+import promptAssignment from '@/server/gpt/prompt-assignment'
 
 type Props = {
     fileNameInGCP: string,
     originalFileName: string,
-    jobID: `${string}-${string}-${string}-${string}-${string}`
+    jobID: `${string}-${string}-${string}-${string}-${string}`,
+    prompt: string
 }
 
-async function uploadBigPDF({ fileNameInGCP, originalFileName, jobID}: Props){
+async function uploadBigPDF({ fileNameInGCP, originalFileName, jobID, prompt}: Props){
     try{
         const promise = new Promise(async (resolve, reject) => {
 
@@ -63,7 +66,27 @@ async function uploadBigPDF({ fileNameInGCP, originalFileName, jobID}: Props){
             console.log('adding to redis')
 
             await redisClient.set(jobID, JSON.stringify({status: 'complete', data: {originalFileName: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split!.fileName, vectorList: serializedID}}), 'EX', 120)
+            
+            const embeddedPrompt = await embedPrompt(prompt)
 
+            const search = await searchEmbeddings(upsert?.idList, embeddedPrompt.data[0]?.embedding!, upsert?.randomID!)
+
+            const store: string[] = []
+
+            search.forEach((match) => {
+            console.log()
+
+            const index = match.metadata?.index
+
+            store.push(chunked[index as number]!)
+        })
+
+        console.log(store.length)
+
+        const joined = store.join('')
+        console.log(joined)
+
+        console.log(await promptAssignment(prompt, joined, 'test'))
             resolve('resolve')
         })
         return promise
