@@ -7,6 +7,10 @@ import z from "zod";
 import {PDFDocument} from 'pdf-lib';
 import fs from 'fs';
 import promptAssignment from "@/server/gpt/prompt-assignment";
+import promptOpenAI from "@/defer/prompt";
+import { Storage } from "@google-cloud/storage";
+import client from "@/utils/google";
+import { randomUUID } from "crypto";
 
 export const sourceRouter = createTRPCRouter({
     useExistingSource: publicProcedure
@@ -49,4 +53,17 @@ export const sourceRouter = createTRPCRouter({
         return await promptAssignment(input.prompt, joined, sampleText)
     }),
 
+    promptOpenAI: publicProcedure
+    .input(z.object({ gcpName: z.string(), prompt: z.string()}))
+    .query(async ({ ctx, input }) => {
+        const source = await ctx.db.source.findFirst({
+            where:{
+                gcpFileName: input.gcpName
+            }
+        })
+
+        const vectorList = source?.vectorList.split(',')
+        const vectorPrefix = source?.vectorPrefix!
+        return await promptOpenAI({prompt: input.prompt, fileNameInGCP: input.gcpName, vectorList: vectorList!, vectorPrefix: vectorPrefix, jobID: randomUUID()})
+    })
 })

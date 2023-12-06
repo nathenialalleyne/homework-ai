@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StageContext } from '../context'
 import { api } from '@/utils/api'
+import { randomUUID } from 'crypto'
 type Props = {}
 
 export default function InputSource({ }: Props) {
@@ -12,6 +13,7 @@ export default function InputSource({ }: Props) {
     const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
     const { data: test, refetch: refetchTest } = api.sourceRouter.useExistingSource.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
 
+    const { data: openai, refetch: refetchPrompt } = api.sourceRouter.promptOpenAI.useQuery({ gcpName: sources?.[0]?.gcpFileName!, prompt: text! }, { enabled: false })
     const setStage = useContext(StageContext)
 
     // useEffect(() => {
@@ -22,6 +24,10 @@ export default function InputSource({ }: Props) {
         (setStage as React.Dispatch<React.SetStateAction<string>>)('source')
         refetch()
     }, [])
+
+    useEffect(() => {
+        console.log(openai)
+    }, [openai])
 
     const formData = new FormData()
     formData.append('file', convert as File)
@@ -71,31 +77,29 @@ export default function InputSource({ }: Props) {
                             body: formData
                         })
 
-                        const json: { message: string, jobID: string } = await id.json()
+                        const json: { message: string, jobID: string, executionID: string } = await id.json()
+                        const merge = json.jobID + "," + json.executionID
 
-                        console.log(json)
                         const interval = setInterval(async () => {
                             console.log('checking')
-                            const res = await fetch(`/api/job-status/${json.jobID}`)
+                            const res = await fetch(`/api/job-status/${merge}`)
                             const datad = await res.json()
-                            if (datad.status === 'complete') {
+                            if (datad.state === 'complete') {
+                                clearInterval(interval)
                                 setData(datad)
                                 refetch()
                             }
-                            if (datad.status != 'processing') {
+                            if (datad.state === 'failed') {
                                 clearInterval(interval)
+                                setData(datad)
                             }
                         }, 3500)
-
-
 
                         setData(json)
 
                     }}>get text</button>
                     <button onClick={async () => {
-                        const res = await fetch(`/api/job-status/${data.worker}`)
-                        const datad = await res.json()
-                        console.log(datad)
+                        refetchPrompt()
                     }}>check status</button>
                 </div>)
             }
