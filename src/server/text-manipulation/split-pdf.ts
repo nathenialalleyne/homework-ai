@@ -22,9 +22,7 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
 
         const sectionPromises: Array<{ buffer: Buffer, sectionName: string }> = [];
 
-        console.log('running')
         for (let sectionIndex = 0; sectionIndex < numSections; sectionIndex++) {
-            console.log('running ' + sectionIndex + ' times')
             const startPage = sectionIndex * pagesPerSection + 1;
             const endPage = Math.min((sectionIndex + 1) * pagesPerSection, totalPages);
 
@@ -39,13 +37,11 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
 
             const sectionFileName = `${randomID}_${sectionIndex}.pdf`;
 
-            console.log(sectionPDFBytes)
             sectionPromises.push({buffer: Buffer.from(sectionPDFBytes), sectionName: sectionFileName});
         }
 
 
         const runConcurrently = async () => {
-            console.log('running concurrently')
             const promise = await Promise.all(sectionPromises.map(async (obj: { buffer: Buffer, sectionName: string }) => {
                 await createFileGCPStorage('pdf-source-storage-bucket', obj.sectionName, obj.buffer);
                 const fileContent = await OCRFileContent(`gs://pdf-source-storage-bucket/${obj.sectionName}`, obj.sectionName, randomUUID(), 'application/pdf');
@@ -62,9 +58,6 @@ export default async function splitPDF(inputPDF: Buffer): Promise<{fileName: str
         const fullDocumentText = joinText(files as string[])
         const documentID = randomUUID()
         const fileName = `${documentID}.txt`
-
-        console.log('fullDocumentText: ', fullDocumentText)
-        console.log('done')
 
         await createFileGCPStorage('pdf-source-storage-bucket', fileName, fullDocumentText);
 

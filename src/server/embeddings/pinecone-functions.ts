@@ -57,7 +57,7 @@ export const searchEmbeddings = async (idList: string[], promptEmbed: number[], 
     const averageScore = totalScore / matches.length;
 
 
-    const percentageBelowAverage = 0.4; 
+    const percentageBelowAverage = 0.6; 
 
     const belowAverageThreshold = averageScore * (1 - percentageBelowAverage);
 

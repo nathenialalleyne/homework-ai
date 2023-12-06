@@ -74,16 +74,18 @@ export default function InputSource({ }: Props) {
                         const json: { message: string, jobID: string } = await id.json()
 
                         console.log(json)
-                        // const interval = setInterval(async () => {
-                        //     console.log('checking')
-                        //     const res = await fetch(`/api/job-status/${json.jobID}`)
-                        //     const datad = await res.json()
-                        //     console.log(datad)
-                        //     if (datad.status === 'complete') {
-                        //         setData(datad)
-                        //         clearInterval(interval)
-                        //     }
-                        // }, 1000)
+                        const interval = setInterval(async () => {
+                            console.log('checking')
+                            const res = await fetch(`/api/job-status/${json.jobID}`)
+                            const datad = await res.json()
+                            if (datad.status === 'complete') {
+                                setData(datad)
+                                refetch()
+                            }
+                            if (datad.status != 'processing') {
+                                clearInterval(interval)
+                            }
+                        }, 3500)
 
 
 

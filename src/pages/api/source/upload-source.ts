@@ -12,6 +12,8 @@ import chunkText from '@/server/text-manipulation/chunk-text';
 import { embedFiles } from '@/utils/openai';
 import { upsertEmbedding } from '@/server/embeddings/pinecone-functions';
 import uploadBigPDF from '@/defer/big-pdf';
+import uploadSmallPDF from '@/defer/small-pdf';
+import uploadImage from '@/defer/image';
 import { google } from '@google-cloud/vision/build/protos/protos';
 import { randomUUID } from 'crypto';
 import OCRFileContent from '@/server/gcp/ocr-file-content';
@@ -52,14 +54,36 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             return resolve({jobID: jobID})
             
           }
+          else{
+            if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, pdfData, 'application/pdf'))) return reject('Error uploading to GCP')
+            const jobID = randomUUID()
+            assignOptions(uploadSmallPDF, {metadata: {jobID: jobID}})
+            
+            await uploadSmallPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID})
+
+            return resolve({jobID: jobID})
+            
+          }
         }
+        
+        if (file.mimetype == 'image/png' || file.mimetype == 'image/jpeg'){
+          const imageData = await fs.promises.readFile(file.filepath)
+          const jobID = randomUUID()
+
+          if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, imageData, file.mimetype))) return reject('Error uploading to GCP')
+          assignOptions(uploadImage, {metadata: {jobID: jobID}})
+
+          await uploadImage({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID, mimetype: file.mimetype})
+          return resolve({jobID: jobID})
+        }
+
         //   else{
         //     const random = Math.random().toString(36).substring(7)
 
         //     if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, pdfData))) return reject('Error uploading to GCP')
 
             
-        //     const text = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomUUID(), file.mimetype)
+            // const text = await OCRFileContent('gs://pdf-source-storage-bucket/' + file.newFilename, file.newFilename, randomUUID(), file.mimetype)
         //     const parsedText = JSON.parse(text as string).responses[0].fullTextAnnotation?.text!
         //     await deleteFile(file.newFilename)
         //     const uuid = `${randomUUID()}.txt`
