@@ -12,7 +12,7 @@ export default function InputSource({ }: Props) {
     const [gcpFileName, setGcpFileName] = useState<string>()
     const [jobStarted, setJobStarted] = useState(false)
 
-    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false,  });
+    const { data: sources, refetch } = api.dbOperations.getSources.useQuery({ cursor: 0 }, { enabled: false, });
     const { data: openai, refetch: refetchPrompt } = api.sourceRouter.promptOpenAI.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
     const { data: jobStatusData, refetch: refetchJobStatus } = api.statusRouter.soureStatus.useQuery({ jobID: data?.jobID, executionID: data?.executionID }, { enabled: false })
     const setStage = useContext(StageContext)
