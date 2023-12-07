@@ -2,7 +2,7 @@ import {NextApiRequest, NextApiResponse} from 'next';
 import type { WebhookEvent } from "@clerk/clerk-sdk-node"
 import { databaseRouter } from '@/server/api/routers/database-operations';
 import { db } from '@/server/db';
-import { getAuth } from '@clerk/nextjs/dist/types/server-helpers.server';
+import { getAuth } from '@clerk/nextjs/server';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const evt = req.body.evt as WebhookEvent;
