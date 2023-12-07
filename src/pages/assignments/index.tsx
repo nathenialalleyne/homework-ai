@@ -11,7 +11,7 @@ export default function Assignment({ }: Props) {
     const [sample, setSample] = useState<string>()
     // const hello = api.example.hello.useQuery({ text: convert as File }, { enabled: false });
     const createSample = api.dbOperations.addSample.useMutation({})
-    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false })
+const { data: sources, refetch } = api.dbOperations.getSources.useQuery({cursor: 0}, { enabled: false })
 
     useEffect(() => {
         console.log(data)
