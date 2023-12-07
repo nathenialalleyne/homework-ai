@@ -26,7 +26,7 @@ export default function PricingCard({
                 <h2 className='text-4xl'>{price}</h2>
                 <p className='font-extralight text-gray-300'>{description}</p>
                 <ul className='flex flex-col justify-between h-[200px]'>
-                    {features.map((feature) => (
+                    {features?.map((feature) => (
                         <li className='flex w-full items-center gap-2'>
                             <Image src={'/assets/check.png'} alt='check mark' width={5} height={5} className='w-fit h-fit' />
                             <p className='font-extralight'>{feature}</p>
