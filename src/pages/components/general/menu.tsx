@@ -15,7 +15,7 @@ export default function Menu({ }: Props) {
     useEffect(() => {
         refetch()
         data?.forEach((source) => {
-            setSources((prev) => [...sources, source])
+            // setSources((prev) => [...sources, source])
         })
     }, [])
     
