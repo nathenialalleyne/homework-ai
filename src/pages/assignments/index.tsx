@@ -26,7 +26,6 @@ const { data: sources, refetch } = api.dbOperations.getSources.useQuery({cursor:
         formData.append('file', convert as File)
         formData.append('prompt', text as string)
 
-        formData.
 
         const res = await fetch('/api/upload', {
             method: 'POST',
