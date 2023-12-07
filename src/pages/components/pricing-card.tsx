@@ -33,7 +33,10 @@ export default function PricingCard({
                         </li>
                     ))}
                 </ul>
-                {!free ? <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
+                {!free ? <button onClick={()=>{
+                    window.location.href = 'https://app.geniusdraft.com/register'
+                    
+                }} className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
                     <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
                 </button> : <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
                     <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>

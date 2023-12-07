@@ -16,11 +16,11 @@ export const stripeRouter = createTRPCRouter({
             ],
             mode: 'subscription',
             payment_method_types: ['card'],
-            success_url: input.successURL,
+            success_url: input.successURL + `?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: input.cancelURL,
         });
         return {sessionID: session.id}
     })
 
-    
+
 })

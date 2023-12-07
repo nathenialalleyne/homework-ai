@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const actionType = fields.actionType?.toString()
             
             actionType === 'update' ? await dbRouter.updateSample({
-              id: Number(fields.id),
+              id: fields.id?.toString()!,
               newFileName: file.newFilename
             }) :
             await dbRouter.addSample({
