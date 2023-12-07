@@ -13,46 +13,6 @@ import client from "@/utils/google";
 import { randomUUID } from "crypto";
 
 export const sourceRouter = createTRPCRouter({
-    useExistingSource: publicProcedure
-    .input(z.object({ gcpName: z.string(), prompt: z.string() }))
-    .query(async ({ ctx, input }) => {
-        const source = await ctx.db.source.findFirst({
-            where:{
-                gcpFileName: input.gcpName
-            }
-        })
-
-        const sample = await ctx.db.writingSamples.findFirst({
-            where: {
-                user: ctx.auth.userId!
-            }
-        })
-
-        if (!source) throw new Error('Source not found')
-
-        
-        const chunked = await chunkText(input.gcpName)
-        const sampleText = await downloadFile(sample!.fileName, 'user-sample-storage')
-        const promptEmbedding = await embedPrompt(input.prompt)
-
-        const search = await searchEmbeddings(source.vectorList.split(','),promptEmbedding.data[0]?.embedding!,source.vectorPrefix)
-
-        const store: string[] = []
-
-        search.forEach((match) => {
-            console.log(match)
-
-            const index = match.metadata?.index
-
-            store.push(chunked[index as number]!)
-        })
-
-        const joined = store.join('')
-        console.log(joined)
-
-        return await promptAssignment(input.prompt, joined, sampleText)
-    }),
-
     promptOpenAI: publicProcedure
     .input(z.object({ gcpName: z.string(), prompt: z.string()}))
     .query(async ({ ctx, input }) => {
@@ -64,6 +24,9 @@ export const sourceRouter = createTRPCRouter({
 
         const vectorList = source?.vectorList.split(',')
         const vectorPrefix = source?.vectorPrefix!
-        return await promptOpenAI({prompt: input.prompt, fileNameInGCP: input.gcpName, vectorList: vectorList!, vectorPrefix: vectorPrefix, jobID: randomUUID()})
+
+        const jobID = randomUUID()
+        const {id} = await promptOpenAI({prompt: input.prompt, fileNameInGCP: input.gcpName, vectorList: vectorList!, vectorPrefix: vectorPrefix, jobID: jobID})
+        return {jobID: jobID, executionID: id}
     })
 })

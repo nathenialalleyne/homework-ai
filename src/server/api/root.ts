@@ -1,5 +1,6 @@
 import { databaseRouter } from "./routers/database-operations";
 import { sourceRouter } from "./routers/source-router";
+import { statusRouter } from "./routers/status-router"
 import { createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -11,7 +12,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
 export const appRouter = createTRPCRouter({
   dbOperations: databaseRouter,
   sourceRouter: sourceRouter,
-
+  statusRouter: statusRouter,
 });
 
 // export type definition of API

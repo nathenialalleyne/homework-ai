@@ -10,48 +10,36 @@ export default function InputSource({ }: Props) {
     const [data, setData] = useState<any>()
     const [text, setText] = useState<string>()
     const [gcpFileName, setGcpFileName] = useState<string>()
-    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
-    const { data: test, refetch: refetchTest } = api.sourceRouter.useExistingSource.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
+    const [jobStarted, setJobStarted] = useState(false)
 
-    const { data: openai, refetch: refetchPrompt } = api.sourceRouter.promptOpenAI.useQuery({ gcpName: sources?.[0]?.gcpFileName!, prompt: text! }, { enabled: false })
+    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
+
+
+    const { data: openai, refetch: refetchPrompt } = api.sourceRouter.promptOpenAI.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
+    const { data: jobStatusData, refetch: refetchJobStatus } = api.statusRouter.soureStatus.useQuery({ jobID: data?.jobID, executionID: data?.executionID }, { enabled: !!jobStarted })
     const setStage = useContext(StageContext)
 
-    // useEffect(() => {
-    //     console.log(data)
-    // }, [data])
+    useEffect(() => {
+        if (gcpFileName && text) {
+        }
+    }, [gcpFileName, text])
 
     useEffect(() => {
         (setStage as React.Dispatch<React.SetStateAction<string>>)('source')
         refetch()
     }, [])
 
-    useEffect(() => {
-        console.log(openai)
-    }, [openai])
-
     const formData = new FormData()
     formData.append('file', convert as File)
     formData.append('prompt', text as string)
 
-    const sendToGoogleStorage = async () => {
-        const res = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData
-        })
-        const data = await res.json()
-        console.log(data)
-        return data
-    }
-
-
-
     return (
         <div>
             {sources ? <div> {sources.map((source) => {
-                return <div><button onClick={() => {
+                return <div><button value={source.gcpFileName} onClick={() => {
                     const newGcpFileName = source.gcpFileName
                     setGcpFileName(newGcpFileName)
-                    refetchTest()
+                    console.log(gcpFileName)
                 }}>{source.name}</button> {source.gcpFileName} {source.vectorPrefix} {source.vectorList}</div>
             })}</div> : <div>loading</div>}
             {loading ? <div>loading</div> :
@@ -67,39 +55,30 @@ export default function InputSource({ }: Props) {
                     }} />
 
                     <button onClick={async () => {
-                        console.log(convert)
-
-                        // setLoading(true)
-                        // setData(await sendToGoogleStorage())
-                        // setLoading(false)
                         const id = await fetch('/api/source/upload-source', {
                             method: 'POST',
                             body: formData
                         })
 
                         const json: { message: string, jobID: string, executionID: string } = await id.json()
-                        const merge = json.jobID + "," + json.executionID
-
                         const interval = setInterval(async () => {
-                            console.log('checking')
-                            const res = await fetch(`/api/job-status/${merge}`)
-                            const datad = await res.json()
-                            if (datad.state === 'complete') {
+                            refetchJobStatus()
+                            if (jobStatusData?.state === 'complete') {
                                 clearInterval(interval)
-                                setData(datad)
                                 refetch()
                             }
-                            if (datad.state === 'failed') {
+                            if (jobStatusData?.state === 'failed') {
                                 clearInterval(interval)
-                                setData(datad)
                             }
                         }, 3500)
 
                         setData(json)
+                        setJobStarted(jobStatusData?.state !== 'complete' || !jobStatusData);
 
                     }}>get text</button>
                     <button onClick={async () => {
                         refetchPrompt()
+
                     }}>check status</button>
                 </div>)
             }

@@ -41,6 +41,7 @@ async function promptOpenAI ({prompt, jobID, vectorList, vectorPrefix, fileNameI
         const finalPrompt = await promptAssignment(prompt, joined, 'test')
 
         console.log(finalPrompt)
+        redisClient.set(jobID, JSON.stringify({status: 'complete', data: {result: finalPrompt}}), 'EX', 120)
 
         resolve('resolve')
     })

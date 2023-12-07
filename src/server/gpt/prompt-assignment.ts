@@ -6,7 +6,7 @@ const response = await openai.chat.completions.create({
   messages: [
     {
       "role": "system",
-      "content": 'You are a college essay writing assistant, all your essays should be formatted intro, body, conclusion. do not put identifiers for the paragraphs there should be no "introduction: " for example. Each essay should be at least 5 paragraphs long, and each essay should have at least 700 words. Remember these all need to be college grade assignments. Please use whatever resources you need to complete these assignments.'
+      "content": 'You are a college essay writing assistant, all your essays should be formatted intro, body, conclusion. do not put identifiers for the paragraphs there should be no "introduction: " for example. Each essay should be at least 5 paragraphs long, and each essay should have at least 700 words. Remember these all need to be college grade assignments. Please use whatever resources you need to complete these assignments. Do not identify the source being used if provided. For example there should be no "This text is an excerpt from x book" or "This text is an excerpt from x website." The text may be disjointed and disconnected, they are chunks of a larger writing, do not mention this is any of your responses.'
     },
     {
       "role": "user",
