@@ -33,10 +33,6 @@ const isAPI = (path: string) => {
   return path.match(new RegExp(`^\/(api)\/`))
 }
 
-const isTRPC = (path: string) => {
-  return path.match(new RegExp(`^\/(trpc)\/`))
-}
-
 export default withClerkMiddleware(async (request: NextRequest, event: NextFetchEvent) => {
   //Rate limit apis.
   if (isAPI(request.nextUrl.pathname)) {
@@ -51,19 +47,6 @@ export default withClerkMiddleware(async (request: NextRequest, event: NextFetch
     res.headers.set("X-RateLimit-Reset", reset.toString());
     return res;
   }
-
-  if(isTRPC(request.nextUrl.pathname)){
-      const userId = getAuth(request).userId;
-      const { success, pending, limit, reset, remaining } = await trpcLimiter.limit(`ratelimit_middleware_${userId}`);
-      event.waitUntil(pending);
-      
-      const res = success ? NextResponse.next() : NextResponse.redirect(new URL("/api/blocked", request.url));
-      
-      res.headers.set("X-RateLimit-Limit", limit.toString());
-      res.headers.set("X-RateLimit-Remaining", remaining.toString());
-      res.headers.set("X-RateLimit-Reset", reset.toString());
-      return res;
-        }
 
   // do nothing
   if (isPublic(request.nextUrl.pathname)) {

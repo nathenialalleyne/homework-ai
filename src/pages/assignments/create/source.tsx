@@ -12,11 +12,9 @@ export default function InputSource({ }: Props) {
     const [gcpFileName, setGcpFileName] = useState<string>()
     const [jobStarted, setJobStarted] = useState(false)
 
-    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false });
-
-
+    const { data: sources, refetch } = api.dbOperations.getSources.useQuery(undefined, { enabled: false,  });
     const { data: openai, refetch: refetchPrompt } = api.sourceRouter.promptOpenAI.useQuery({ gcpName: gcpFileName!, prompt: text! }, { enabled: false })
-    const { data: jobStatusData, refetch: refetchJobStatus } = api.statusRouter.soureStatus.useQuery({ jobID: data?.jobID, executionID: data?.executionID }, { enabled: !!jobStarted })
+    const { data: jobStatusData, refetch: refetchJobStatus } = api.statusRouter.soureStatus.useQuery({ jobID: data?.jobID, executionID: data?.executionID }, { enabled: false })
     const setStage = useContext(StageContext)
 
     useEffect(() => {
@@ -32,12 +30,12 @@ export default function InputSource({ }: Props) {
     const formData = new FormData()
     formData.append('file', convert as File)
     formData.append('prompt', text as string)
-
     return (
         <div>
-            {sources ? <div> {sources.map((source) => {
+            {/* {sources ? <div> {sources.map((source) => {
                 return <div><button value={source.gcpFileName} onClick={() => {
                     const newGcpFileName = source.gcpFileName
+            
                     setGcpFileName(newGcpFileName)
                     console.log(gcpFileName)
                 }}>{source.name}</button> {source.gcpFileName} {source.vectorPrefix} {source.vectorList}</div>
@@ -62,7 +60,9 @@ export default function InputSource({ }: Props) {
 
                         const json: { message: string, jobID: string, executionID: string } = await id.json()
                         const interval = setInterval(async () => {
-                            refetchJobStatus()
+                            if (jobStatusData && jobStatusData.state != 'complete') {
+                                refetchJobStatus()
+                            }
                             if (jobStatusData?.state === 'complete') {
                                 clearInterval(interval)
                                 refetch()
@@ -81,7 +81,7 @@ export default function InputSource({ }: Props) {
 
                     }}>check status</button>
                 </div>)
-            }
+            } */}
         </div>
     )
 }

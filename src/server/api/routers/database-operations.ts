@@ -71,8 +71,16 @@ export const databaseRouter = createTRPCRouter({
   }),
 
   getSources: publicProcedure
-  .query(async ({ ctx }) => {
-    const sources = await ctx.db.source.findMany()
+  .input(z.object({ cursor: z.number() }))
+  .query(async ({ ctx, input }) => {
+    const sources = await ctx.db.source.findMany({take: 10, skip: input.cursor, where:{userID: ctx.auth.userId!}})
+    return sources
+  }),
+
+  searchSources: publicProcedure
+  .input(z.object({ cursor: z.number(), search: z.string() }))
+  .query(async ({ ctx, input }) => {
+    const sources = await ctx.db.source.findMany({take: 10, skip: input.cursor, where:{userID: ctx.auth.userId!, name: {contains: input.search}}})
     return sources
   }),
 

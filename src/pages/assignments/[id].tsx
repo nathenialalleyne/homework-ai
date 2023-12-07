@@ -12,7 +12,7 @@ export default function CreateAssignment({ }: Props) {
   return (
     <StageContext.Provider value={setStage}>
       {stage === 'name' ? <NameAssignment setAssignmentName={setAssignmentName} /> : null}
-      {stage === 'source' ? <InputSource /> : null}
+      {stage === 'source' ? <InputSource key={1}/> : null}
     </StageContext.Provider>
   )
 }
