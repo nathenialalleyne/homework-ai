@@ -8,7 +8,21 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "husky install",
+    "precommit": "tsc --noEmit && lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
   },
   "dependencies": {
     "@clerk/nextjs": "^4.24.2",
@@ -41,6 +55,7 @@
     "convertapi": "^1.12.0",
     "formidable": "^3.5.1",
     "google-auth-library": "^9.4.1",
+    "husky": "^8.0.3",
     "ioredis": "^5.3.2",
     "next": "^13.4.19",
     "openai": "^4.12.1",
@@ -67,6 +82,7 @@
     "autoprefixer": "^10.4.14",
     "eslint": "^8.47.0",
     "eslint-config-next": "^13.4.19",
+    "husky": "^8.0.0",
     "postcss": "^8.4.27",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.1",
