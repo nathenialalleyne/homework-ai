@@ -28,7 +28,6 @@ export default function Testimonials({ }: Props) {
       text: '"I\'m a writer and have been using GeniusDraft to help me write my first novel. It\'s been a tremendous help. I\'ve been able to write more and better than ever before. I\'m so glad I found it."',
       image: '/assets/da.jpg'
     }
-    // Add more testimonials as needed
   ];
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -59,7 +58,7 @@ export default function Testimonials({ }: Props) {
 
   return (
     <div className='flex justify-center items-center mt-8 relative border-box py-20'>
-      <div className='w-[1200px] flex justify-between mt-8'>
+      <div className='w-[75rem] flex justify-between mt-8'>
         <div className='flex flex-col space-y-4 p-4 w-1/2'>
           <SectionHeading>TESTIMONIALS</SectionHeading>
           <h2 className='text-4xl font-bold w-full'>What Students Are Saying About GeniusDraft</h2>

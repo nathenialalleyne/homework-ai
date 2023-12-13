@@ -7,7 +7,7 @@ type Props = {}
 export default function PricingPlans({ }: Props) {
     return (
         <div className='w-full flex justify-center items-center'>
-            <div className='w-[1200px] flex flex-col items-center '>
+            <div className='w-[75rem] flex flex-col items-center '>
                 <div>
                     <LandingHeader sectionName='PRICING PLANS' headingText='Choose The Plan That Works For You' paragraphText='GeniusDraft offers a variety of plans to meet your needs. Whether you are a student, professional, or business, we have a plan for you.' />
                 </div>
@@ -26,7 +26,7 @@ export default function PricingPlans({ }: Props) {
                         description='Tailored for students with dynamic schedules. Our Weekly Plan provides flexibility and premium features for a shorter time frame, perfect for assignments and creative projects.'
                         buttonText='Choose Plan'
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Perfect for those with dynamic writing needs on a weekly basis.']}
-                        price='$0'
+                        price='$3/week'
                         key={2}
                     />
                     <PricingCard
@@ -34,8 +34,8 @@ export default function PricingPlans({ }: Props) {
                         description='For students seeking consistent support. Our Monthly Plan delivers a comprehensive set of features over a longer period, ideal for handling academic projects cost-effectively.'
                         buttonText='Choose Plan'
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Best value for consistent writing task on a monthly basis.']}
-                        price='$0'
-                        key={2}
+                        price='$10/month'
+                        key={3}
                     />
                 </div>
             </div>

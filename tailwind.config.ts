@@ -1,6 +1,7 @@
 import { type Config } from "tailwindcss";
 import colors from 'tailwindcss/colors'
 
+
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -15,6 +16,15 @@ export default {
       secondary: '#00A1FF',
       dark: '#101010'
 
+    },
+    screens:{
+      xs: '320px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1440px',
+      '2xl': '1536px',
+      
     }
   },
   plugins: [require('tailwind-scrollbar'),],
