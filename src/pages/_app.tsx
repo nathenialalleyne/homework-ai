@@ -17,6 +17,9 @@ const poppins = Poppins({
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <main className={`${poppins.variable} font-sans`}>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7276895481826418"
+        crossOrigin="anonymous">
+      </script>
       <ClerkProvider {...pageProps}>
         <Component {...pageProps} />
       </ClerkProvider>
