@@ -6,7 +6,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import redisClient from "./utils/redis";
 
-const publicPaths = ["/", "/sign-in*", "/sign-up*", "/api/blocked"];
+const publicPaths = ["/", "/sign-in*", "/sign-up*", "/api/blocked", "/api/stripe/*", "/api/clerk/*"];
 
 const redis = new Redis({
       url: process.env.UPSTASH_URL!,
@@ -16,11 +16,6 @@ const redis = new Redis({
 const ratelimit = new Ratelimit({
   redis: redis,
   limiter: Ratelimit.fixedWindow(5, '10s')
-});
-
-const trpcLimiter = new Ratelimit({
-      redis: redis,
-      limiter: Ratelimit.fixedWindow(20, '10s')
 });
 
 const isPublic = (path: string) => {

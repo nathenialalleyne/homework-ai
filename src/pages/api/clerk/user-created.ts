@@ -1,26 +1,50 @@
-import {NextApiRequest, NextApiResponse} from 'next';
-import type { WebhookEvent } from "@clerk/clerk-sdk-node"
-import { databaseRouter } from '@/server/api/routers/database-operations';
-import { db } from '@/server/db';
-import { getAuth } from '@clerk/nextjs/server';
+import { NextApiRequest, NextApiResponse } from 'next'
+import type { WebhookEvent } from '@clerk/clerk-sdk-node'
+import { databaseRouter } from '@/server/api/routers/database-operations'
+import { db } from '@/server/db'
+import { getAuth } from '@clerk/nextjs/server'
+import { Webhook } from 'svix'
+import { headers } from 'next/headers'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const evt = req.body.evt as WebhookEvent;
-  
-  try{
-    switch(evt.type) {
-      case "user.created":
-        const dbRouter = databaseRouter.createCaller({db: db, auth: getAuth(req)})
-        await dbRouter.createUser({
-          id: evt.data.id,
-          createdAt: new Date(evt.data.created_at),
-        })
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET
 
-        break;
+  if (!webhookSecret) {
+    res.status(400).send('Missing webhook secret')
+    return
+  }
+
+  const headerPayload = headers()
+  const svix_id = headerPayload.get('svix-id')
+  const svix_timestamp = headerPayload.get('svix-timestamp')
+  const svix_signature = headerPayload.get('svix-signature')
+
+  if (!svix_id || !svix_timestamp || !svix_signature) {
+    res.status(400).send('Missing required headers')
+  }
+
+  const payload = JSON.stringify(req.body)
+  const wh = new Webhook(webhookSecret)
+
+  let evt: WebhookEvent
+
+  try {
+    evt = wh.verify(payload, {
+      svix_id: svix_id!,
+      svix_timestamp: svix_timestamp!,
+      svix_signature: svix_signature!,
+    }) as WebhookEvent
+
+    if (!evt) {
+      throw new Error('Invalid webhook signature')
     }
-    res.status(200)
+  } catch (err) {
+    res.status(400).send('Error occuered')
   }
-  catch(e){
-    res.status(400)
-  }
+  
+  const { id } = evt.data
+  const { type } = evt.type
 }

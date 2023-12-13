@@ -18,8 +18,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     CLERK_SECRET_KEY: z.string().min(1),
-    UPLOADTHING_SECRET: z.string().min(1),
-    UPLOADTHING_APP_ID: z.string().min(1),
+    CLERK_WEBHOOK_SECRET: z.string().min(1),
     OPENAI_SECRET_KEY: z.string().min(1),
     PINECONE_API_KEY: z.string().min(1),
     STRIPE_TEST_KEY: z.string().min(1),
@@ -47,15 +46,13 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
-    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
-    UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
+    CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
     OPENAI_SECRET_KEY: process.env.OPENAI_SECRET_KEY,
     PINECONE_API_KEY: process.env.PINECONE_API_KEY,
     STRIPE_TEST_KEY: process.env.STRIPE_TEST_KEY,
     UPSTASH_URL: process.env.UPSTASH_URL,
     UPSTASH_TOKEN: process.env.UPSTASH_TOKEN,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
