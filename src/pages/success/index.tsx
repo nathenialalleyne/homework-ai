@@ -6,6 +6,7 @@ import useDeviceSize from '@/hooks/use-device-size';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
 import type { Stripe } from 'stripe';
+import Loader from '../images/loader';
 
 type Props = {};
 
@@ -13,12 +14,16 @@ const Success = () => {
     const deviceSize = useDeviceSize();
     const router = useRouter();
     const [session, setSession] = useState<Stripe.Checkout.Session | null>(null)
+    const [notFound, setNotFound] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState(true);
 
     const query = router.query.session_id
 
     const fetchSession = api.stripeRouter.getSession.useMutation()
 
     useEffect(() => {
+        console.log(session)
+        console.log(query)
         if (query) {
             new Promise<Stripe.Checkout.Session>((resolve, reject) => {
                 if (session) {
@@ -29,11 +34,32 @@ const Success = () => {
                             setSession(session)
                             resolve(session)
                         })
-                        .catch(reject)
+                        .catch(() => {
+                            reject('Session not found')
+                        })
+                        .finally(() => {
+                            setNotFound(true)
+                        })
                 }
             })
+        } else {
+            setNotFound(true)
         }
     }, [query])
+
+    useEffect(() => {
+        console.log(isLoading)
+        if (notFound && !session) {
+            router.push('/')
+        }
+    }, [notFound])
+
+    if (isLoading) {
+        return <div className='bg-dark w-screen h-screen flex overflow-hidden'>
+            <Loader key={1} />
+        </div>
+    }
+
 
     return (
         <div className="bg-dark w-screen h-screen overflow-hidden relative">

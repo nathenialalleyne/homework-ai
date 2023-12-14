@@ -77,7 +77,6 @@ export default function PricingCard({
                             }
 
                             try {
-
                                 const hold = await handleCheckout()
                                 if (hold) {
                                     router.push(hold)
@@ -85,21 +84,19 @@ export default function PricingCard({
                                     setClicked?.(!clicked)
                                 }
                             } catch (err) {
+                                console.log(err)
+                            } finally {
                                 setClicked?.(!clicked)
                             }
                         }}
                             className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
                             <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
                         </button> :
-                        <div className='w-full flex items-center justify-center animate-spin'>
-                            <Loader className='w-12 h-12' />
-                        </div> :
+                        <Loader className='w-12 h-12' /> :
                     !clicked ? <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
                         <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>
                     </button> :
-                        <div className='w-full flex items-center justify-center animate-spin'>
-                            <Loader className='w-12 h-12' />
-                        </div>
+                        <Loader className='w-12 h-12' />
                 }
             </div>
         </div>
