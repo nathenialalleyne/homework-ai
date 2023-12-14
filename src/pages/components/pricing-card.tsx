@@ -72,17 +72,21 @@ export default function PricingCard({
                     !clicked ?
                         <button onClick={async () => {
                             if (user.isLoaded && !user.isSignedIn) {
-                                router.push('https://pretty-jay-28.accounts.dev/sign-up')
+                                router.push('https://pretty-jay-28.accounts.dev/sign-up*')
                                 return
                             }
-                            const hold = await handleCheckout()
-                            if (hold) {
-                                router.push(hold)
-                            } else {
+
+                            try {
+
+                                const hold = await handleCheckout()
+                                if (hold) {
+                                    router.push(hold)
+                                } else {
+                                    setClicked?.(!clicked)
+                                }
+                            } catch (err) {
                                 setClicked?.(!clicked)
                             }
-                            // console.log(url)
-                            // router.push(getSession.data?.url!)
                         }}
                             className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
                             <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
