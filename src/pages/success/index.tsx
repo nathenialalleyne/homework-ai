@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 import SuccessPaymentIcon from '../images/success-payment';
-import Header from '../components/Header';
 import useDeviceSize from '@/hooks/use-device-size';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
 import type { Stripe } from 'stripe';
 import Loader from '../images/loader';
-
-type Props = {};
+import FullLogo from '../images/logo';
 
 const Success = () => {
     const deviceSize = useDeviceSize();
@@ -22,39 +20,36 @@ const Success = () => {
     const fetchSession = api.stripeRouter.getSession.useMutation()
 
     useEffect(() => {
-        console.log(session)
-        console.log(query)
-        if (query) {
-            new Promise<Stripe.Checkout.Session>((resolve, reject) => {
+        if (router.isReady) {
+            if (query) {
                 if (session) {
-                    resolve(session)
+                    setIsLoading(false);
                 } else {
                     fetchSession.mutateAsync({ sessionID: query as string })
                         .then((session) => {
-                            setSession(session)
-                            resolve(session)
+                            console.log('found')
+                            setSession(session);
+                            setIsLoading(false);
                         })
                         .catch(() => {
-                            reject('Session not found')
-                        })
-                        .finally(() => {
-                            setNotFound(true)
-                        })
+                            console.log('not found')
+                            setNotFound(true);
+                            setIsLoading(false);
+                        });
                 }
-            })
-        } else {
-            setNotFound(true)
-        }
-    }, [query])
+            } else {
+                console.log('no query')
+                setNotFound(true);
+                setIsLoading(false);
+            }
 
-    useEffect(() => {
-        console.log(isLoading)
-        if (notFound && !session) {
-            router.push('/')
+            if (!isLoading && notFound) {
+                router.push('/');
+            }
         }
-    }, [notFound])
+    }, [query, session, isLoading, notFound]);
 
-    if (isLoading) {
+    if (isLoading || notFound) {
         return <div className='bg-dark w-screen h-screen flex overflow-hidden'>
             <Loader key={1} />
         </div>
@@ -63,12 +58,21 @@ const Success = () => {
 
     return (
         <div className="bg-dark w-screen h-screen overflow-hidden relative">
-            <Header removeList containerClassName='!z-30 absolute' />
-            <div className="w-full h-full flex flex-col items-center justify-center relative z-20 overflow-hidden">
-                <SuccessPaymentIcon className="w-28 h-fit  bg-white p-4 rounded-full bg-gradient-to-tr from-primary to-secondary grow-0 flex items-center justify-center" />
-                <h1 className="text-4xl text-white mt-4 font-semibold">Payment Successful</h1>
-                <p className="text-lg text-white text-center mt-2 w-[25rem] font-extralight">Your payment has been processed successfully. Click the button below to access the dashboard.</p>
-                <button className="bg-gradient-to-tr from-primary to-secondary text-white px-4 py-2 mt-4  rounded-lg font-semibold" onClick={() => router.push('/profile')}>Go to Dashboard</button>
+            
+            <div className="w-full h-full flex flex-col items-center justify-center relative z-20 overflow-hidden gap-20">
+
+            <div className='hover:cursor-pointer w-full flex items-center justify-center z-30 pt-' onClick={() => {
+                router.push('/')
+            }}>
+                <FullLogo className='max-w-[225px] h-fit xs:flex-shrink lg:flex-shrink-0 mb-4 md:mb-0' />
+            </div>
+
+                <div className='flex flex-col items-center'>
+                    <SuccessPaymentIcon className="w-28 h-fit  bg-white p-4 rounded-full bg-gradient-to-tr from-primary to-secondary grow-0 flex items-center justify-center" />
+                    <h1 className="text-4xl text-white mt-4 font-semibold">Payment Successful</h1>
+                    <p className="text-lg text-white text-center mt-2 w-[25rem] font-extralight">Your payment has been processed successfully. Click the button below to access the dashboard.</p>
+                    <button className="bg-gradient-to-tr from-primary to-secondary text-white px-4 py-2 mt-4  rounded-lg font-semibold" onClick={() => router.push('/profile')}>Go to Dashboard</button>
+                </div>
             </div>
             <div id="confetti-container" className="absolute top-0 left-0 w-full h-full z-10">
                 <Confetti width={deviceSize.width} height={deviceSize.height} numberOfPieces={20} opacity={.7} />
