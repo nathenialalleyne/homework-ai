@@ -51,6 +51,7 @@
     "openai": "^4.12.1",
     "pdf-lib": "^1.17.1",
     "react": "18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "18.2.0",
     "stripe": "^14.8.0",
     "superjson": "^1.13.1",

@@ -9,6 +9,7 @@ export const stripeRouter = createTRPCRouter({
       console.log(process.env.STRIPE_TEST_KEY)
       const session = await stripe.checkout.sessions.create({
         billing_address_collection: 'auto',
+        metadata: { userId: ctx.auth.userId },
         line_items: [
           {
             price: 'price_1OKcstFnFnGc1hoSczf66Gev',
@@ -16,6 +17,11 @@ export const stripeRouter = createTRPCRouter({
           },
         ],
         mode: 'subscription',
+        subscription_data: {
+          metadata: {
+            userId: ctx.auth.userId,
+          },
+        },
         payment_method_types: ['card'],
         success_url: input.URL + `success/?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: input.URL,

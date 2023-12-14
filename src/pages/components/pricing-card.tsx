@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import SectionHeading from './section-heading'
 import Image from 'next/image'
-import stripe from '@/utils/stripe'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
-import { redirect } from 'next/navigation'
-import Link from 'next/link'
+import Loader from '@/pages/images/loader'
+import { redirectToSignUp, useUser } from '@clerk/nextjs'
+import { RedirectToSignUp, SignOutButton, SignUp, useSignIn, useSignUp } from '@clerk/clerk-react'
+
 
 type Props = {
     plan: string
@@ -13,7 +14,9 @@ type Props = {
     features: string[]
     buttonText: string
     description: string
-    free?: boolean
+    free?: boolean,
+    clicked?: boolean,
+    setClicked?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function PricingCard({
@@ -22,16 +25,21 @@ export default function PricingCard({
     features,
     buttonText,
     description,
-    free
+    free,
+    clicked,
+    setClicked
 }: Props) {
 
     const [url, setUrl] = useState<string>()
     const router = useRouter()
+    const user = useUser()
+    const { signUp } = useSignUp()
 
     const createCheckout = api.stripeRouter.createCheckoutSession.useMutation()
     const getSession = api.stripeRouter.getSession.useMutation()
 
     const handleCheckout = async () => {
+        setClicked?.(!clicked)
         return new Promise<string | undefined>(async (resolve) => {
             await createCheckout.mutateAsync({ URL: window.location.href }, {
                 onSuccess: async (data) => {
@@ -46,7 +54,6 @@ export default function PricingCard({
             })
         });
     }
-
     return (
         <div className='flex flex-col bg-gradient-to-br from-primary to-secondary w-1/3 p-[1px] h-[550px] rounded-lg'>
             <div className='bg-stone-900 w-full h-full p-4 flex flex-col justify-between rounded-lg'>
@@ -61,19 +68,34 @@ export default function PricingCard({
                         </li>
                     ))}
                 </ul>
-                {!free ? <button onClick={async () => {
-                    const hold = await handleCheckout()
-                    if (hold){
-                        router.push(hold)
-                    }
-                    // console.log(url)
-                    // router.push(getSession.data?.url!)
-                }}
-                    className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
-                    <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
-                </button> : <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
-                    <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>
-                </button>
+                {!free ?
+                    !clicked ?
+                        <button onClick={async () => {
+                            if (user.isLoaded && !user.isSignedIn) {
+                                router.push('https://pretty-jay-28.accounts.dev/sign-up')
+                                return
+                            }
+                            const hold = await handleCheckout()
+                            if (hold) {
+                                router.push(hold)
+                            } else {
+                                setClicked?.(!clicked)
+                            }
+                            // console.log(url)
+                            // router.push(getSession.data?.url!)
+                        }}
+                            className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
+                            <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
+                        </button> :
+                        <div className='w-full flex items-center justify-center animate-spin'>
+                            <Loader className='w-12 h-12' />
+                        </div> :
+                    !clicked ? <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
+                        <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>
+                    </button> :
+                        <div className='w-full flex items-center justify-center animate-spin'>
+                            <Loader className='w-12 h-12' />
+                        </div>
                 }
             </div>
         </div>

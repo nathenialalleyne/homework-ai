@@ -44,7 +44,7 @@ model Source {
 
 model User {
   id               String   @id @default(uuid())
-  signUpDate       DateTime
+  signUpDate       DateTime @default(now())
   actionsRemaining Int
   accountType      String
 }

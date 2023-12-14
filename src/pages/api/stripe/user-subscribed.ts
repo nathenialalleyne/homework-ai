@@ -2,6 +2,7 @@ import stripe from '@/utils/stripe'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { buffer } from 'micro'
+import { db } from '@/server/db'
 
 export const config = {
   api: {
@@ -32,13 +33,26 @@ export default async function handler(
       return
     }
 
+    const { id } = event.data
+    console.log(event)
+    console.log('Event ID: ' + id)
+
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntentSucceeded = event.data.object
-        // Then define and call a function to handle the event payment_intent.succeeded
-        console.log(paymentIntentSucceeded)
+        db.user.update({
+          where: { id: paymentIntentSucceeded.metadata.userId },
+          data: { accountType: 'premium' },
+        })
         break
-      // ... handle other event types
+      case 'customer.subscription.deleted':
+        const subscriptionDeleted = event.data.object
+        db.user.update({
+          where: { id: subscriptionDeleted.metadata.userId },
+          data: { accountType: 'free' },
+        })
+
+        break
       default:
         console.log(`Unhandled event type ${event.type}`)
     }

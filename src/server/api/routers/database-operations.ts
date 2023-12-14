@@ -6,7 +6,18 @@ import deleteFile from '@/server/gcp/delete-gcps-files';
 import createFileInGCPStorage from '@/server/gcp/create-file';
 
 export const databaseRouter = createTRPCRouter({
-  
+
+  getUser: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findFirst({
+        where:{
+          id: input.id
+        }
+      })
+      return user
+    }),
+    
   addSample: publicProcedure
     .input(z.object({ text: z.string() }))
     .mutation(async ({ input,ctx }) => {

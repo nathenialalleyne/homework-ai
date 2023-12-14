@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import type { WebhookEvent } from '@clerk/clerk-sdk-node'
-import { databaseRouter } from '@/server/api/routers/database-operations'
 import { db } from '@/server/db'
-import { getAuth } from '@clerk/nextjs/server'
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 
@@ -39,12 +37,26 @@ export default async function handler(
     }) as WebhookEvent
 
     if (!evt) {
-      throw new Error('Invalid webhook signature')
+      throw new Error('Invalid webhook')
     }
   } catch (err) {
-    res.status(400).send('Error occuered')
+    return res.status(400).send('Error occuered')
   }
-  
+
   const { id } = evt.data
-  const { type } = evt.type
+  const eventType = evt.type
+
+  try {
+    if (eventType === 'user.created') {
+      await db.user.create({
+        data: {
+          accountType: 'free',
+          actionsRemaining: 10,
+        },
+      })
+    }
+    res.status(200).send('Success')
+  } catch (err) {
+    return res.status(400).send('Error occuered')
+  }
 }

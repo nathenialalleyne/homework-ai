@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PricingCard from '../components/pricing-card'
 import LandingHeader from '../components/landing-header'
 
 type Props = {}
 
 export default function PricingPlans({ }: Props) {
+    const [clicked, setClicked] = useState(false)
     return (
         <div className='w-full flex justify-center items-center'>
             <div className='w-[75rem] flex flex-col items-center '>
@@ -20,6 +21,8 @@ export default function PricingPlans({ }: Props) {
                         price='$0'
                         free
                         key={1}
+                        clicked={clicked}
+                        setClicked={setClicked}
                     />
                     <PricingCard
                         plan='WEEKLY WRITIER'
@@ -28,6 +31,8 @@ export default function PricingPlans({ }: Props) {
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Perfect for those with dynamic writing needs on a weekly basis.']}
                         price='$3/week'
                         key={2}
+                        clicked={clicked}
+                        setClicked={setClicked}
                     />
                     <PricingCard
                         plan='MONTHLY MAESTRO'
@@ -36,6 +41,8 @@ export default function PricingPlans({ }: Props) {
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Best value for consistent writing task on a monthly basis.']}
                         price='$10/month'
                         key={3}
+                        clicked={clicked}
+                        setClicked={setClicked}
                     />
                 </div>
             </div>
