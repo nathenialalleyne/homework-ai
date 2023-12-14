@@ -1,5 +1,7 @@
 import React from 'react';
 import FullLogo from '../images/logo';
+import BrainIcon from '../images/brain-icon';
+import Tooltip from './general/tooltip';
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import classNames from 'classnames';
@@ -8,26 +10,27 @@ import { useRouter } from 'next/router';
 type Props = {
     containerClassName?: string
     removeList?: boolean
+    profile?: boolean
 };
 
-export default function Header({containerClassName, removeList }: Props) {
+export default function Header({ containerClassName, removeList, profile }: Props) {
     const router = useRouter();
     return (
         <header className={classNames('w-full h-fit flex justify-center items-center pt-6 z-0 pl-4 pr-4 md:pl-64 md:pr-64 z-30', containerClassName)}>
 
             <div className='w-full max-w-[75rem] flex flex-col md:flex-row justify-between items-center'>
 
-                <div className='hover:cursor-pointer' onClick={()=>{
+                <div className='hover:cursor-pointer' onClick={() => {
                     router.push('/')
                 }}>
                     <FullLogo className='max-w-[225px] h-fit xs:flex-shrink lg:flex-shrink-0 mb-4 md:mb-0' />
                 </div>
 
-                <ul className='flex justify-center items-center text-white gap-6'>
+                {!profile ? <ul className='flex justify-center items-center text-white gap-6'>
                     {!removeList ? <ul className='flex flex-col md:flex-row'>
                         <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0 md:mr-6'>Features</li>
                         <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0'>Premium</li>
-                    </ul> : null}       
+                    </ul> : null}
                     <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-24 h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
                         <SignedOut>
                             <SignUpButton mode='redirect'>
@@ -41,7 +44,13 @@ export default function Header({containerClassName, removeList }: Props) {
                             </Link>
                         </SignedIn>
                     </li>
-                </ul>
+                </ul> : <div onMouseOver={() => {
+                    console.log('hover')
+                }}>
+                    <Tooltip text='Premium' spanClassName='w-[5rem] text-center'>
+                        <BrainIcon className='w-12 h-12' />
+                    </Tooltip>
+                </div>}
             </div>
 
         </header>
