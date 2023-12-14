@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import type { WebhookEvent } from '@clerk/clerk-sdk-node'
 import { db } from '@/server/db'
 import { Webhook } from 'svix'
-import { headers } from 'next/headers'
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,10 +14,10 @@ export default async function handler(
     return
   }
 
-  const headerPayload = headers()
-  const svix_id = headerPayload.get('svix-id')
-  const svix_timestamp = headerPayload.get('svix-timestamp')
-  const svix_signature = headerPayload.get('svix-signature')
+  const headerPayload = req.headers
+  const svix_id = headerPayload['svix-id']
+  const svix_timestamp = headerPayload['svix-timestamp']
+  const svix_signature = headerPayload['svix-signature']
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     res.status(400).send('Missing required headers')
@@ -31,9 +30,9 @@ export default async function handler(
 
   try {
     evt = wh.verify(payload, {
-      svix_id: svix_id!,
-      svix_timestamp: svix_timestamp!,
-      svix_signature: svix_signature!,
+      svix_id: svix_id as string,
+      svix_timestamp: svix_timestamp as string,
+      svix_signature: svix_signature as string,
     }) as WebhookEvent
 
     if (!evt) {
