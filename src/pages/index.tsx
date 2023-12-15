@@ -1,4 +1,4 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Header from "@/pages/components/Header";
@@ -17,6 +17,7 @@ export default function Home() {
   const router = useRouter()
   const [userDetails, setUserDetails] = useState<any>(null)
   const getUser = api.dbOperations.getUser.useQuery({ id: user?.id! }, { enabled: false })
+
   // useEffect(() => {
   //   user ? router.push('/profile') : null
   // }, [user])
@@ -37,6 +38,8 @@ export default function Home() {
     }
     console.log(userDetails)
   }, [user])
+
+
   return (
     <div className="overflow-hidden relative text-white bg-dark flex flex-col items-center">
       <Header />
