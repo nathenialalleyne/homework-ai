@@ -84,7 +84,7 @@ export default function PricingCard({
                     !clicked ?
                         <button onClick={async () => {
                             if (user.isLoaded && !user.isSignedIn) {
-                                useClerk().redirectToSignUp()
+                                redirectToSignUp()
                                 return
                             }
 
