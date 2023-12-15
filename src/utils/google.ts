@@ -1,16 +1,16 @@
 import { GoogleAuth } from "google-auth-library";
+import { Storage } from "@google-cloud/storage";
 
-const GoogleAuthOptions = () => {   
-    return new GoogleAuth({
-        keyFile: '/gcp-key.json',
-        scopes: [
-            'https://www.googleapis.com/auth/cloud-platform', 
-            'https://www.googleapis.com/auth/cloud-vision',
-            'https://www.googleapis.com/auth/devstorage.full_control',
-        ],
-    })
-}
-    
-const client = GoogleAuthOptions().getClient()
+const gcsKey = JSON.parse(
+  Buffer.from(process.env.GCP_CRED_FILE!, 'base64').toString(),
+)
 
-export default client
+const storage = new Storage({
+  credentials: {
+    client_email: gcsKey.client_email,
+    private_key: gcsKey.private_key,
+  },
+  projectId: gcsKey.project_id,
+})
+
+export default storage

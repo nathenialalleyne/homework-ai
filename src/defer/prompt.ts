@@ -1,8 +1,7 @@
 import {defer} from '@defer/client'
 import { embedPrompt } from '@/server/embeddings/embed-prompt'
 import redisClient from '@/utils/redis'
-import client from '@/utils/google'
-import { Storage } from '@google-cloud/storage'
+import storage from '@/utils/google'
 import { searchEmbeddings } from '@/server/embeddings/pinecone-functions'
 import chunkText from '@/server/text-manipulation/chunk-text'
 import promptAssignment from '@/server/gpt/prompt-assignment'
@@ -21,9 +20,7 @@ async function promptOpenAI ({prompt, jobID, vectorList, vectorPrefix, fileNameI
     new Promise(async (resolve, reject) => {
         redisClient.set(jobID, JSON.stringify({status: 'processing'}), 'EX', 120)
 
-        const storage = new Storage({projectId: 'altrai', authClient: await client})
-
-        const chunked = await chunkText(storage, fileNameInGCP)
+        const chunked = await chunkText(fileNameInGCP)
 
         const embeddedPrompt = await embedPrompt(prompt)
 

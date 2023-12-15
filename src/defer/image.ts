@@ -1,6 +1,5 @@
 import { defer } from '@defer/client'
-import { Storage } from '@google-cloud/storage'
-import client from '@/utils/google'
+import storage from '@/utils/google'
 import chunkText from '@/server/text-manipulation/chunk-text'
 import { embedFiles } from '@/utils/openai'
 import { upsertEmbedding } from '@/server/embeddings/pinecone-functions'
@@ -24,7 +23,6 @@ async function uploadImage({ fileNameInGCP, originalFileName, jobID, mimetype}: 
 
             await redisClient.set(jobID, JSON.stringify({status: 'processing'}), 'EX', 120)
             
-            const storage = new Storage({projectId: 'altrai', authClient: await client})     
             const text = await OCRFileContent('gs://pdf-source-storage-bucket/' + fileNameInGCP, fileNameInGCP, randomUUID(), mimetype)
             const parsedText: string = (text as google.cloud.vision.v1.ITextAnnotation).text!
 
@@ -33,7 +31,7 @@ async function uploadImage({ fileNameInGCP, originalFileName, jobID, mimetype}: 
 
 
             const random = Math.random().toString(36).substring(7)
-            const chunked = await chunkText(storage, uuid) || reject('Error chunking text')
+            const chunked = await chunkText(uuid) || reject('Error chunking text')
 
             const embeddings = await embedFiles(chunked) || reject('Error embedding files')
 

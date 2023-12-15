@@ -1,5 +1,5 @@
 import { defer } from '@defer/client'
-import { Storage } from '@google-cloud/storage'
+import storage from '@/utils/google'
 import client from '@/utils/google'
 import chunkText from '@/server/text-manipulation/chunk-text'
 import { embedFiles } from '@/utils/openai'
@@ -23,13 +23,12 @@ async function uploadBigPDF({ fileNameInGCP, originalFileName, jobID, prompt}: P
 
         await redisClient.set(jobID, JSON.stringify({status: 'processing'}), 'EX', 120)
         
-        const storage = new Storage({projectId: 'altrai', authClient: await client})
         const download = await storage.bucket('pdf-source-storage-bucket').file(fileNameInGCP).download()
         
         await deleteFile(fileNameInGCP, 'pdf-source-storage-bucket')
         
         const split = await splitPDF(download[0]) || reject('Error splitting pdf')
-        const chunked = await chunkText(storage, split!.fileName) || reject('Error chunking text')
+        const chunked = await chunkText(split!.fileName) || reject('Error chunking text')
         const embeddings = await embedFiles(chunked) || reject('Error embedding files')
 
 
