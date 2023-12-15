@@ -14,8 +14,9 @@ export default {
       ...colors,
       primary: '#00FF8F',
       secondary: '#00A1FF',
-      dark: '#101010'
-
+      dark: '#101010',
+      slightlyDark: '#1d1d1d',
+      lighterDark: '#2a2a2a'
     },
     screens:{
       xs: '320px',

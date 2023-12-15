@@ -4,8 +4,7 @@ import Image from 'next/image'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Loader from '@/pages/images/loader'
-import { redirectToSignUp, useUser } from '@clerk/nextjs'
-import { RedirectToSignUp, SignOutButton, SignUp, useSignIn, useSignUp } from '@clerk/clerk-react'
+import { useClerk, useUser } from '@clerk/nextjs'
 
 
 type Props = {
@@ -31,12 +30,14 @@ export default function PricingCard({
 }: Props) {
 
     const [url, setUrl] = useState<string>()
+
     const router = useRouter()
     const user = useUser()
-    const { signUp } = useSignUp()
+    const { openSignUp, redirectToSignUp } = useClerk()
 
     const createCheckout = api.stripeRouter.createCheckoutSession.useMutation()
     const getSession = api.stripeRouter.getSession.useMutation()
+    const getUserAccountType = api.dbOperations.getUser.useQuery({ id: user.user?.id! }, { enabled: !!user.user?.id })
 
     const handleCheckout = async () => {
         setClicked?.(!clicked)
@@ -53,6 +54,17 @@ export default function PricingCard({
                 }
             })
         });
+    }
+
+    const checkAccountType = async () => {
+        if (user.isLoaded && user.isSignedIn) {
+            await getUserAccountType.refetch()
+            console.log(getUserAccountType.data?.accountType)
+            if (getUserAccountType.data?.accountType === 'premium') {
+                router.push('/profile')
+                return
+            }
+        }
     }
     return (
         <div className='flex flex-col bg-gradient-to-br from-primary to-secondary w-1/3 p-[1px] h-[550px] rounded-lg'>
@@ -72,9 +84,11 @@ export default function PricingCard({
                     !clicked ?
                         <button onClick={async () => {
                             if (user.isLoaded && !user.isSignedIn) {
-                                router.push('https://pretty-jay-28.accounts.dev/sign-up*')
+                                useClerk().redirectToSignUp()
                                 return
                             }
+
+                            checkAccountType()
 
                             try {
                                 const hold = await handleCheckout()

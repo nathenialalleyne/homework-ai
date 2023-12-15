@@ -49,6 +49,7 @@ export default async function handler(
     if (eventType === 'user.created') {
       await db.user.create({
         data: {
+          id: evt.data.id,
           accountType: 'free',
           actionsRemaining: 10,
         },

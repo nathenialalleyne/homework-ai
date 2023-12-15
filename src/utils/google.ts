@@ -2,7 +2,7 @@ import { GoogleAuth } from "google-auth-library";
 
 const GoogleAuthOptions = () => {   
     return new GoogleAuth({
-        keyFile: 'gcp-key.json',
+        keyFile: '/gcp-key.json',
         scopes: [
             'https://www.googleapis.com/auth/cloud-platform', 
             'https://www.googleapis.com/auth/cloud-vision',
