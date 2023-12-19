@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const jobID = randomUUID()
             assignOptions(uploadBigPDF, {metadata: {jobID: jobID}})
             
-            const {id} = await uploadBigPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID, prompt: prompt})
+            const {id} = await uploadBigPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID, prompt: prompt, userID: getAuth(req)?.userId!})
 
             return resolve({jobID: jobID, executionID: id})
             
@@ -61,7 +61,12 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
             const jobID = randomUUID()
             assignOptions(uploadSmallPDF, {metadata: {jobID: jobID}})
             
-            const { id } = await uploadSmallPDF({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID})
+            const { id } = await uploadSmallPDF({
+              fileNameInGCP: file.newFilename,
+              originalFileName: file.originalFilename!,
+              jobID: jobID,
+              userID: getAuth(req)?.userId!,
+            })
 
             return resolve({jobID: jobID, executionID: id})
             
@@ -75,7 +80,13 @@ export default async function handler(req: NextApiRequestWithFormData, res: Next
           if (!(await createFileInGCPStorage('pdf-source-storage-bucket', file.newFilename, imageData, file.mimetype))) return reject('Error uploading to GCP')
           assignOptions(uploadImage, {metadata: {jobID: jobID}})
 
-          const { id } = await uploadImage({fileNameInGCP: file.newFilename, originalFileName: file.originalFilename!,  jobID: jobID, mimetype: file.mimetype})
+          const { id } = await uploadImage({
+            fileNameInGCP: file.newFilename,
+            originalFileName: file.originalFilename!,
+            jobID: jobID,
+            mimetype: file.mimetype,
+            userID: getAuth(req)?.userId!,
+          })
 
           return resolve({jobID: jobID, executionID: id})
         }

@@ -3,68 +3,102 @@ import storage from '@/utils/google'
 import client from '@/utils/google'
 import chunkText from '@/server/text-manipulation/chunk-text'
 import { embedFiles } from '@/utils/openai'
-import { searchEmbeddings, upsertEmbedding } from '@/server/embeddings/pinecone-functions'
+import {
+  searchEmbeddings,
+  upsertEmbedding,
+} from '@/server/embeddings/pinecone-functions'
 import { Embedding } from 'openai/resources'
 import redisClient from '@/utils/redis'
 import splitPDF from '@/server/text-manipulation/split-pdf'
 import deleteFile from '@/server/gcp/delete-gcps-files'
 import { embedPrompt } from '@/server/embeddings/embed-prompt'
 import promptAssignment from '@/server/gpt/prompt-assignment'
+import { db } from '@/server/db'
 
 type Props = {
-    fileNameInGCP: string,
-    originalFileName: string,
-    jobID: `${string}-${string}-${string}-${string}-${string}`,
-    prompt: string
+  fileNameInGCP: string
+  originalFileName: string
+  jobID: `${string}-${string}-${string}-${string}-${string}`
+  prompt: string
+  userID: string
 }
 
-async function uploadBigPDF({ fileNameInGCP, originalFileName, jobID, prompt}: Props){
-    const promise = new Promise(async (resolve, reject) => {
+async function uploadBigPDF({
+  fileNameInGCP,
+  originalFileName,
+  jobID,
+  prompt,
+  userID,
+}: Props) {
+  const promise = new Promise(async (resolve, reject) => {
+    await redisClient.set(
+      jobID,
+      JSON.stringify({ status: 'processing' }),
+      'EX',
+      120,
+    )
 
-        await redisClient.set(jobID, JSON.stringify({status: 'processing'}), 'EX', 120)
-        
-        const download = await storage.bucket('pdf-source-storage-bucket').file(fileNameInGCP).download()
-        
-        await deleteFile(fileNameInGCP, 'pdf-source-storage-bucket')
-        
-        const split = await splitPDF(download[0]) || reject('Error splitting pdf')
-        const chunked = await chunkText(split!.fileName) || reject('Error chunking text')
-        const embeddings = await embedFiles(chunked) || reject('Error embedding files')
+    const download = await storage
+      .bucket('pdf-source-storage-bucket')
+      .file(fileNameInGCP)
+      .download()
 
+    await deleteFile(fileNameInGCP, 'pdf-source-storage-bucket')
 
-        function chunckEmbeddings(){
-            const maxBatchSize = 100;
-            const batches = [];
+    const split = (await splitPDF(download[0])) || reject('Error splitting pdf')
+    const chunked =
+      (await chunkText(split!.fileName)) || reject('Error chunking text')
+    const embeddings =
+      (await embedFiles(chunked)) || reject('Error embedding files')
 
-            for (let i = 0; i < chunked.length; i += maxBatchSize) {
-                const chunkBatch = embeddings.slice(i, i + maxBatchSize);
-                batches.push(chunkBatch);
-            }
+    function chunckEmbeddings() {
+      const maxBatchSize = 100
+      const batches = []
 
-            return batches
-        }
+      for (let i = 0; i < chunked.length; i += maxBatchSize) {
+        const chunkBatch = embeddings.slice(i, i + maxBatchSize)
+        batches.push(chunkBatch)
+      }
 
-        async function upsertBatch(){
-            const chunkArr = chunckEmbeddings()
-            const idList = []
-                for (let i=0;i<chunkArr.length;i++){
-                    const upsert = await upsertEmbedding(chunkArr[i] as Embedding[], `${split?.randomID}_${i}`)
-                    idList.push(...upsert.idList)
-                }
-            if (idList.length) return reject('Error upserting embeddings')
+      return batches
+    }
 
-            return {idList, randomID: split?.randomID}
-        }
+    async function upsertBatch() {
+      const chunkArr = chunckEmbeddings()
+      const idList = []
+      for (let i = 0; i < chunkArr.length; i++) {
+        const upsert = await upsertEmbedding(
+          chunkArr[i] as Embedding[],
+          `${split?.randomID}_${i}`,
+        )
+        idList.push(...upsert.idList)
+      }
+      if (idList.length) return reject('Error upserting embeddings')
 
-        const upsert = embeddings.length > 100 ? await upsertBatch() : await upsertEmbedding(embeddings, split!.randomID)
-        if (!upsert) return reject('Error upserting embeddings')
+      return { idList, randomID: split?.randomID }
+    }
 
-        const serializedID = upsert?.idList.join(',')
+    const upsert =
+      embeddings.length > 100
+        ? await upsertBatch()
+        : await upsertEmbedding(embeddings, split!.randomID)
+    if (!upsert) return reject('Error upserting embeddings')
 
-        await redisClient.set(jobID, JSON.stringify({status: 'complete', data: {originalFileName: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split!.fileName, vectorList: serializedID}}), 'EX', 120)
-        resolve('completed')
+    const serializedID = upsert?.idList.join(',')
+
+    await db.source.create({
+      data: {
+        gcpFileName: split!.fileName,
+        name: originalFileName,
+        userID: userID,
+        vectorList: serializedID,
+        vectorPrefix: upsert?.randomID!,
+      },
     })
-    return promise
+    // await redisClient.set(jobID, JSON.stringify({status: 'complete', data: {originalFileName: originalFileName, vectorPrefix: upsert?.randomID!, gcpName: split!.fileName, vectorList: serializedID}}), 'EX', 120)
+    resolve('completed')
+  })
+  return promise
 }
 
-export default defer(uploadBigPDF, {retry: 3,})
+export default defer(uploadBigPDF, { retry: 3 })

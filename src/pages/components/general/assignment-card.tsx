@@ -5,7 +5,7 @@ type Props = {
     assignmentName: string,
     assignmentDescription: string,
     date: string,
-    setSelectAssignment: React.Dispatch<React.SetStateAction<string | null>>
+    setSelectAssignment: React.Dispatch<React.SetStateAction<string | null | boolean>>
 }
 
 export default function AssignmentCard({
