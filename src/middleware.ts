@@ -16,7 +16,7 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.fixedWindow(5, '10s'),
 })
 
-const publicPaths = [/^\/$/, /^\/api\/blocked$/, /^\/api\/webhooks\/\*$/i]
+const publicPaths = [/^\/$/, /^\/api\/blocked$/, /^\/api\/webhooks\/\*$/i, /\/api\/trpc\/earlyAccessRouter\/\*/i]
 
 const isPublic = (path: string) => {
   return publicPaths.some((regex) => regex.test(path))
