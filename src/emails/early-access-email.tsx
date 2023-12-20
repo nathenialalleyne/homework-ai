@@ -46,7 +46,7 @@ export const EarlyAccessSignUp = () => {
                     <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px] relative">
                         <Section className="mt-[32px]">
                             <Img
-                                src={`${baseUrl}/static/colored-logo.png`}
+                                src={`${baseUrl}/colored-logo.png`}
                                 width={200}
                                 alt="GeniusDraft"
                                 className="my-0 mx-auto"
@@ -71,7 +71,7 @@ export const EarlyAccessSignUp = () => {
                                 <Column align='right'>
                                     <Link href='https://x.com/geniusdraftapp'>
                                         <Img
-                                            src={`${baseUrl}/static/twitter.png`}
+                                            src={`${baseUrl}/twitter.png`}
                                             height={25}
                                             width={25}
                                         />
@@ -81,7 +81,7 @@ export const EarlyAccessSignUp = () => {
                                 <Column align='left'>
                                     <Link href='https://instagram.com/geniusdraftapp'>
                                         <Img
-                                            src={`${baseUrl}/static/instagram.png`}
+                                            src={`${baseUrl}/instagram.png`}
                                             height={25}
                                             width={25}
                                             className='border border-px border-white'
