@@ -46,7 +46,7 @@ export const EarlyAccessSignUp = () => {
                     <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px] relative">
                         <Section className="mt-[32px]">
                             <Img
-                                src={`${baseUrl}/assets/colored-logo.png`}
+                                src={`${baseUrl}/static/colored-logo.png`}
                                 width={200}
                                 alt="GeniusDraft"
                                 className="my-0 mx-auto"

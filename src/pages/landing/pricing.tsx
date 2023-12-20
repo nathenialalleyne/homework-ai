@@ -20,6 +20,7 @@ export default function PricingPlans({ }: Props) {
                         features={['Personalized writing style adaptation', 'Limited source integration', 'Ads Included', 'Get Started for free and experience the essentials of GeniusDraft']}
                         price='$0'
                         free
+                        noButton
                         key={1}
                         clicked={clicked}
                         setClicked={setClicked}
@@ -31,6 +32,7 @@ export default function PricingPlans({ }: Props) {
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Perfect for those with dynamic writing needs on a weekly basis.']}
                         price='$3/week'
                         key={2}
+                        noButton
                         clicked={clicked}
                         setClicked={setClicked}
                     />
@@ -41,6 +43,7 @@ export default function PricingPlans({ }: Props) {
                         features={['Personalized writing style adaptation', 'Unlimited source integration', 'Ad Free', 'Best value for consistent writing task on a monthly basis.']}
                         price='$10/month'
                         key={3}
+                        noButton
                         clicked={clicked}
                         setClicked={setClicked}
                     />

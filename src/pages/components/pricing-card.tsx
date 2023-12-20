@@ -15,7 +15,8 @@ type Props = {
     description: string
     free?: boolean,
     clicked?: boolean,
-    setClicked?: React.Dispatch<React.SetStateAction<boolean>>
+    setClicked?: React.Dispatch<React.SetStateAction<boolean>>,
+    noButton?: boolean
 }
 
 export default function PricingCard({
@@ -26,7 +27,8 @@ export default function PricingCard({
     description,
     free,
     clicked,
-    setClicked
+    setClicked,
+    noButton
 }: Props) {
 
     const [url, setUrl] = useState<string>()
@@ -80,37 +82,39 @@ export default function PricingCard({
                         </li>
                     ))}
                 </ul>
-                {!free ?
-                    !clicked ?
-                        <button onClick={async () => {
-                            if (user.isLoaded && !user.isSignedIn) {
-                                redirectToSignUp()
-                                return
-                            }
+                {!noButton ?
+                    !free ?
+                        !clicked ?
+                            <button onClick={async () => {
+                                if (user.isLoaded && !user.isSignedIn) {
+                                    redirectToSignUp()
+                                    return
+                                }
 
-                            checkAccountType()
+                                checkAccountType()
 
-                            try {
-                                const hold = await handleCheckout()
-                                if (hold) {
-                                    router.push(hold)
-                                } else {
+                                try {
+                                    const hold = await handleCheckout()
+                                    if (hold) {
+                                        router.push(hold)
+                                    } else {
+                                        setClicked?.(!clicked)
+                                    }
+                                } catch (err) {
+                                    console.log(err)
+                                } finally {
                                     setClicked?.(!clicked)
                                 }
-                            } catch (err) {
-                                console.log(err)
-                            } finally {
-                                setClicked?.(!clicked)
-                            }
-                        }}
-                            className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
-                            <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
+                            }}
+                                className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12 p-[1px]'>
+                                <div className='w-full h-full bg-stone-900 rounded-full flex items-center justify-center text-white'>{buttonText}</div>
+                            </button> :
+                            <Loader className='w-12 h-12' /> :
+                        !clicked ? <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
+                            <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>
                         </button> :
-                        <Loader className='w-12 h-12' /> :
-                    !clicked ? <button className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-full h-12'>
-                        <div className='w-full h-full rounded-full flex items-center justify-center'>{buttonText}</div>
-                    </button> :
-                        <Loader className='w-12 h-12' />
+                            <Loader className='w-12 h-12' /> :
+                    null
                 }
             </div>
         </div>
