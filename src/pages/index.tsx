@@ -39,11 +39,6 @@ export default function Home() {
     console.log(userDetails)
   }, [user])
 
-  const { signOut } = useClerk()
-
-  useEffect(() => {
-    signOut()
-  })
 
   return (
     <div className="overflow-hidden relative text-white bg-dark flex flex-col items-center">

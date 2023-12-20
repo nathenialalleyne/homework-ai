@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import HeroImage from '@/pages/images/hero-image';
 import HeroBox from '@/pages/components/box';
 import SectionHeading from '../components/section-heading';
 import Link from 'next/link';
 import { SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import { api } from '@/utils/api';
+import Loader from '../images/loader';
 
 type Props = {};
 
 export default function LandingHero({ }: Props) {
+    const [email, setEmail] = useState('')
+    const addToEarlyAccessList = api.earlyAccessRouter.addToEmailList.useMutation();
+
+    const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log(email)
+        await addToEarlyAccessList.mutateAsync({ email })
+    }
+
     return (
         <div className='w-full h-fit flex flex-col font-bold text-center z-20 relative'>
 
@@ -27,7 +38,7 @@ export default function LandingHero({ }: Props) {
                                     Are you a college or high school student looking to elevate your writing game? Say goodbye to the struggle of endless assignments and welcome a revolutionary solution – GeniusDraft! Our cutting-edge app transforms the way you approach writing tasks, making academic life smoother and more efficient.
                                 </p>
                                 <div className='w-full'>
-                                    <SignedOut>
+                                    {/* <SignedOut>
                                         <SignUpButton mode='redirect'>
                                             <button
                                                 className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
@@ -43,7 +54,30 @@ export default function LandingHero({ }: Props) {
                                                 Go to Dashboard
                                             </button>
                                         </Link>
-                                    </SignedIn>
+                                    </SignedIn> */}
+                                    <form className='w-full flex' action="submit" onSubmit={submit}>
+                                        {!addToEarlyAccessList.isLoading && !addToEarlyAccessList.isSuccess ? <div className='w-full flex'>
+                                            <input
+                                                onChange={(e) => {
+                                                    setEmail(e.target.value)
+                                                }} type='email'
+                                                minLength={1}
+                                                placeholder='johndoe@email.com'
+                                                className='w-8/12 h-full rounded-l-full p-4 outline-none text-black font-normal' />
+
+                                            <button
+                                                className='transition-all bg-gradient-to-b from-primary to-secondary rounded-r-full text-black hover:opacity-80 z-40 flex items-center justify-between px-2 w-3/12'>
+                                                Register for Early Access
+                                            </button>
+                                        </div> :
+                                            addToEarlyAccessList.isLoading ?
+                                                <Loader /> :
+                                                addToEarlyAccessList.isError ?
+                                                    <div className='text-red-300'>Error! Please try again.</div> :
+                                                    addToEarlyAccessList.data.status == 'ok' ?
+                                                        <div className='bg-gradient-to-tl from-primary to-secondary text-transparent bg-clip-text'>Thank you for signing up!</div> :
+                                                        <div className='text-red-300'>You've already signed up for early access!</div>}
+                                    </form>
                                 </div>
                             </div>
                             <div className='w-full mt-32 xs:hidden lg:block'>

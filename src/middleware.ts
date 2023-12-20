@@ -16,12 +16,7 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.fixedWindow(5, '10s'),
 })
 
-const publicPaths = [
-  /^\/$/,
-  /^\/api\/blocked$/,
-  /^\/api\/stripe\/.*$/,
-  /^\/api\/clerk\/.*$/,
-]
+const publicPaths = [/^\/$/, /^\/api\/blocked$/, /^\/api\/webhooks\/\*$/i]
 
 const isPublic = (path: string) => {
   return publicPaths.some((regex) => regex.test(path))
@@ -33,23 +28,11 @@ const isAPI = (path: string) => {
 
 export default authMiddleware({
   publicRoutes: publicPaths,
-  // beforeAuth: async (request: NextRequest, event: NextFetchEvent) => {
-  //   if (isAPI(request.nextUrl.pathname)) {
-  //     const userId = getAuth(request).userId
-  //     const { success, pending, limit, reset, remaining } =
-  //       await ratelimit.limit(`ratelimit_middleware_${userId}`)
-  //     event.waitUntil(pending)
-
-  //     const res = success
-  //       ? NextResponse.next()
-  //       : NextResponse.redirect(new URL('/api/blocked', request.url))
-
-  //     res.headers.set('X-RateLimit-Limit', limit.toString())
-  //     res.headers.set('X-RateLimit-Remaining', remaining.toString())
-  //     res.headers.set('X-RateLimit-Reset', reset.toString())
-  //     return res
-  //   }
-  // },
+  beforeAuth: async (request: NextRequest, event: NextFetchEvent) => {
+    if (isPublic(request.nextUrl.pathname)) {
+      return NextResponse.next()
+    }
+  },
   afterAuth: async (
     auth: AuthObject,
     request: NextRequest,
@@ -62,7 +45,7 @@ export default authMiddleware({
         return NextResponse.next()
       }
     }
-    
+
     if (isAPI(request.nextUrl.pathname)) {
       const userId = auth.userId
       const { success, pending, limit, reset, remaining } =
@@ -78,7 +61,6 @@ export default authMiddleware({
       res.headers.set('X-RateLimit-Reset', reset.toString())
       return res
     }
-
   },
 })
 

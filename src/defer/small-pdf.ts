@@ -25,12 +25,12 @@ async function uploadSmallPDF({
 }: Props) {
   try {
     const promise = new Promise(async (resolve, reject) => {
-      await redisClient.set(
-        jobID,
-        JSON.stringify({ status: 'processing' }),
-        'EX',
-        120,
-      )
+      // await redisClient.set(
+      //   jobID,
+      //   JSON.stringify({ status: 'processing' }),
+      //   'EX',
+      //   120,
+      // )
 
       const text = await OCRFileContent(
         'gs://pdf-source-storage-bucket/' + fileNameInGCP,
@@ -83,12 +83,12 @@ async function uploadSmallPDF({
     })
     return promise
   } catch (e) {
-    redisClient.set(
-      jobID,
-      JSON.stringify({ status: 'error', error: e }),
-      'EX',
-      120,
-    )
+    // redisClient.set(
+    //   jobID,
+    //   JSON.stringify({ status: 'error', error: e }),
+    //   'EX',
+    //   120,
+    // )
   }
 }
 

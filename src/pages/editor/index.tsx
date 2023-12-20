@@ -15,6 +15,9 @@ export default function Editor({ }: Props) {
   const [sourceSelected, setSourceSelected] = useState<string | null>('new')
   const [file, setFile] = useState<File | null>(null)
   const [prompt, setPrompt] = useState<string | null>(null)
+  const [sourceName, setSourceName] = useState<string | null>(null)
+  const createAssignmentWithExisiting = api.sourceRouter.promptOpenAI.useMutation()
+  // const checkStatus = api.statusRouter.promptStatus.useQuery({ executionID: createAssignmentWithExisiting.data?.id },{enabled: !!createAssignmentWithExisiting.data?.id})
   const getAllAssignments = api.dbOperations.getAssignments.useQuery(undefined, { enabled: false })
   const getSources = api.dbOperations.getSources.useQuery({ cursor: 0 }, { enabled: false })
 
@@ -46,6 +49,17 @@ export default function Editor({ }: Props) {
     await fetch('api/source/upload-source', {
       method: 'POST',
       body: formData
+    })
+  }
+
+  const create = async () => {
+    await createAssignmentWithExisiting.mutateAsync({
+      prompt: prompt as string,
+      gcpName: sourceName as string
+    })
+
+    const interval = setInterval(async ()=>{
+
     })
   }
 
@@ -125,7 +139,13 @@ export default function Editor({ }: Props) {
                     return (
                       <div key={index}>
                         <label>{source.name}</label>
-                        <input type='checkbox' />
+                        <input
+                          type='checkbox'
+                          onChange={() => {
+                            setSourceName(source.gcpFileName)
+                          }}
+                          value={source.gcpFileName}
+                          checked={sourceName === source.gcpFileName} />
                       </div>
                     )
                   })}</div> :
@@ -135,12 +155,17 @@ export default function Editor({ }: Props) {
               }
               <input onChange={(e) => {
                 setPrompt(e.target.value)
-              }}/>
+              }} />
               {
                 file && bytesToSize(file.size) <= 4 && ['application/pdf', 'image/jpeg', 'image/png'].includes(file.type) ?
                   <button onClick={createAssignment}>create</button> :
                   <div className='text-red-400'>invalide file or no file</div>
               }
+              {
+                sourceSelected == 'existing' && sourceName ?
+                  <button onClick={create}>create</button> : null
+              }
+
             </div>
             :
             <div className='flex flex-col justify-center items-center h-full'>

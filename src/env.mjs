@@ -26,6 +26,7 @@ export const env = createEnv({
     UPSTASH_URL: z.string().min(1),
     UPSTASH_TOKEN: z.string().min(1),
     GCP_CRED_FILE: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
   },
 
   /**
@@ -55,6 +56,7 @@ export const env = createEnv({
     UPSTASH_TOKEN: process.env.UPSTASH_TOKEN,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     GCP_CRED_FILE: process.env.GCP_CRED_FILE,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

@@ -31,12 +31,12 @@ async function uploadBigPDF({
   userID,
 }: Props) {
   const promise = new Promise(async (resolve, reject) => {
-    await redisClient.set(
-      jobID,
-      JSON.stringify({ status: 'processing' }),
-      'EX',
-      120,
-    )
+    // await redisClient.set(
+    //   jobID,
+    //   JSON.stringify({ status: 'processing' }),
+    //   'EX',
+    //   120,
+    // )
 
     const download = await storage
       .bucket('pdf-source-storage-bucket')

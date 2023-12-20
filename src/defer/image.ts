@@ -28,12 +28,7 @@ async function uploadImage({
 }: Props) {
   try {
     const promise = new Promise(async (resolve, reject) => {
-      await redisClient.set(
-        jobID,
-        JSON.stringify({ status: 'processing' }),
-        'EX',
-        120,
-      )
+
 
       const text = await OCRFileContent(
         'gs://pdf-source-storage-bucket/' + fileNameInGCP,
@@ -96,12 +91,7 @@ async function uploadImage({
     })
     return promise
   } catch (e) {
-    redisClient.set(
-      jobID,
-      JSON.stringify({ status: 'error', error: e }),
-      'EX',
-      120,
-    )
+
   }
 }
 

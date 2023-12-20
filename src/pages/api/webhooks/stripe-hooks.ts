@@ -4,12 +4,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { buffer } from 'micro'
 import { db } from '@/server/db'
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -40,15 +34,32 @@ export default async function handler(
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntentSucceeded = event.data.object
-        db.user.update({
-          where: { id: paymentIntentSucceeded.metadata.userId },
-          data: { accountType: 'premium' },
+        if (
+          await db.user.findUnique({
+            where: { id: paymentIntentSucceeded.metadata.userId },
+          })
+        ) {
+          await db.user.update({
+            where: { id: paymentIntentSucceeded.metadata.userId },
+            data: { accountType: 'premium' },
+          })
+          break
+        }
+
+        await db.user.create({
+          data: {
+            id: paymentIntentSucceeded.metadata.userId,
+            actionsRemaining: 10,
+            accountType: 'premium',
+          },
         })
         break
+
       case 'customer.subscription.deleted':
         const subscriptionDeleted = event.data.object
         db.user.update({
           where: { id: subscriptionDeleted.metadata.userId },
+
           data: { accountType: 'free' },
         })
 
