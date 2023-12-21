@@ -45,8 +45,12 @@ export default authMiddleware({
   ) => {
     if (isPublic(request.nextUrl.pathname)) {
       return NextResponse.next()
-    }else{
-      return NextResponse.redirect(new URL('/api/blocked', request.url))
+    } else {
+      if (isAPI(request.nextUrl.pathname)) {
+        return NextResponse.redirect(new URL('/api/blocked', request.url))
+      } else {
+        return NextResponse.redirect(new URL('/', request.url))
+      }
     }
     // if (!isPublic(request.nextUrl.pathname)) {
     //   if (!auth.userId) {
