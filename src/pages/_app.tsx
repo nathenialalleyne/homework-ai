@@ -20,13 +20,15 @@ export const metadata = {
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <main className={`${poppins.variable} font-sans bg-dark`}>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7276895481826418"
-        crossOrigin="anonymous">
-      </script>
-      <ClerkProvider {...pageProps}>
-        <Component {...pageProps} />
-      </ClerkProvider>
+    <main className={`${poppins.variable} font-sans`}>
+      <div className="bg-dark scrollbar scrolbar-thin scrollbar-thumb-slightlyDark scrollbar-track-lighterDark">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7276895481826418"
+          crossOrigin="anonymous">
+        </script>
+        <ClerkProvider {...pageProps}>
+          <Component {...pageProps} />
+        </ClerkProvider>
+      </div>
     </main>
   )
 };
