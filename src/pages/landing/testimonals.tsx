@@ -14,9 +14,9 @@ export default function Testimonials({ }: Props) {
       image: '/assets/eh.jpg'
     },
     {
-      author: 'Reggie E. - Graduate Student',
+      author: 'David A. - Graduate Student',
       text: '"As a graduate student, the demands on my writing are high. GeniusDraft has become an invaluable tool in my arsenal. It not only saves time but enhances the quality of my work. It\'s a must- have for anyone serious about academic writing."',
-      image: '/assets/jm.jpg'
+      image: '/assets/da.jpg'
     },
     {
       author: 'Samantha R. - High School Junior',
@@ -24,9 +24,9 @@ export default function Testimonials({ }: Props) {
       image: '/assets/sr.jpg'
     },
     {
-      author: 'David A. - Aspiring Author',
+      author: 'Reggie E. - Aspiring Author',
       text: '"I\'m a writer and have been using GeniusDraft to help me write my first novel. It\'s been a tremendous help. I\'ve been able to write more and better than ever before. I\'m so glad I found it."',
-      image: '/assets/da.jpg'
+      image: '/assets/jm.jpg'
     }
   ];
 

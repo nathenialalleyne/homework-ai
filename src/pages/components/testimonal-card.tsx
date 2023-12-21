@@ -21,7 +21,7 @@ export default function TestimonalCard({
 
                     <div className='flex items-center justify-between pr-4'>
                         <div className='flex gap-4 items-center'>
-                            <Image src={testimonalImageSource} alt='User' width={40} height={40} className='w-10 h-10 rounded-full bg-white'></Image>
+                            <Image src={testimonalImageSource} alt='User' width={40} height={40} className='w-10 h-10 rounded-full bg-white object-cover'></Image>
                             <p className='font-extralight'>{testimonalAuthor}</p>
                         </div>
                         <div className='flex gap-1'>
