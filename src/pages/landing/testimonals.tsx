@@ -79,7 +79,7 @@ export default function Testimonials({ }: Props) {
           </div>
         </div>
 
-        <div className='overflow-hidden'>
+        <div className='overflow-hidden lg:h-fit sm:h-[18rem] xs:h-[24rem]'>
           <div className={`transition-transform ease-in-out duration-300`} style={{ transform: `translateX(${transitioning == 'l' ? '-110%' : transitioning == 'r' ? '110%' : '0'})` }}>
             <TestimonialCard
               testimonalAuthor={testimonialsData[currentCardIndex]?.author!}
