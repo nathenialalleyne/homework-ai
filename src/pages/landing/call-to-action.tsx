@@ -20,7 +20,7 @@ export default function CallToAction({ focusRef }: Props) {
 
     return (
         <div className='w-full flex justify-center items-center mt-16 mb-16 z-[100]'>
-            <div className='bg-black w-[75rem] h-[32rem] rounded-xl flex justify-between items-center p-12'>
+            <div className='bg-black w-[75rem] h-[32rem] xs:h-fit rounded-xl flex justify-between items-center p-12'>
                 <div className='w-1/2 h-full flex flex-col justify-center space-y-4 xs:text-center lg:text-left xs:items-center lg:items-start xs:w-full'>
                     <h2 className='text-5xl font-semibold'>Ready to boost your academic success?</h2>
                     <p className='w-10/12 font-extralight text-lg'>Empower your academic journey with personalized, efficient writing. Seize the opportunity to excel in your assignments effortlessly.</p>
