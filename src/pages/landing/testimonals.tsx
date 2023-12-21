@@ -27,6 +27,10 @@ export default function Testimonials({ }: Props) {
       author: 'Reggie E. - Aspiring Author',
       text: '"I\'m a writer and have been using GeniusDraft to help me write my first novel. It\'s been a tremendous help. I\'ve been able to write more and better than ever before. I\'m so glad I found it."',
       image: '/assets/jm.jpg'
+    }, {
+      author: 'Ryan B. - New Graduate',
+      text: '"GeniusDraft has been an invaluable tool in my academic journey. As a new grad, it supported me in various writing tasks, making assignments more manageable. I\'m confident it will continue to assist students in refining their writing skills and simplifying the demands of academic life."',
+      image: '/assets/rb.jpg'
     }
   ];
 
@@ -79,7 +83,7 @@ export default function Testimonials({ }: Props) {
           </div>
         </div>
 
-        <div className='overflow-hidden lg:h-fit sm:h-[18rem] xs:h-[24rem]'>
+        <div className='overflow-hidden sm:h-[24rem] xs:h-[26rem]'>
           <div className={`transition-transform ease-in-out duration-300`} style={{ transform: `translateX(${transitioning == 'l' ? '-110%' : transitioning == 'r' ? '110%' : '0'})` }}>
             <TestimonialCard
               testimonalAuthor={testimonialsData[currentCardIndex]?.author!}
@@ -88,7 +92,7 @@ export default function Testimonials({ }: Props) {
             />
           </div>
         </div>
-        
+
       </div>
       <Image src='/assets/grid.png' alt='' width={1600} height={1600} className='absolute w-[100rem] h-[37.5rem] object-cover z-0 blur-smf' />
       <div className='absolute z-20 w-[80vw] h-[100vh] -rotate-45 bg-primary rounded-full blur-3xl right-[40vw] bottom-4 opacity-[1%]'></div>
