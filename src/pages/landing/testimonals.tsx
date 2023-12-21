@@ -58,12 +58,12 @@ export default function Testimonials({ }: Props) {
 
   return (
     <div className='flex justify-center items-center mt-8 relative border-box py-20'>
-      <div className='w-[75rem] flex justify-between mt-8'>
-        <div className='flex flex-col space-y-4 p-4 w-1/2'>
-          <SectionHeading>TESTIMONIALS</SectionHeading>
-          <h2 className='text-4xl font-bold w-full'>What Students Are Saying About GeniusDraft</h2>
-          <p className='font-extralight'>Discover how GeniusDraft has transformed the writing experience for people just like you.</p>
-          <div className='flex gap-2 z-30'>
+      <div className='w-[75rem] flex xs:flex-col lg:flex-row xs:items-center lg:items-start justify-between mt-8'>
+        <div className='flex flex-col space-y-4 p-4 lg:w-1/2'>
+          <SectionHeading className='w-full xs:text-center lg:text-left'>TESTIMONIALS</SectionHeading>
+          <h2 className='text-4xl font-bold w-full xs:text-center lg:text-left'>What Students Are Saying About GeniusDraft</h2>
+          <p className='font-extralight xs:text-center lg:text-left'>Discover how GeniusDraft has transformed the writing experience for people just like you.</p>
+          <div className='flex gap-2 z-30 w-full xs:items-center xs:justify-center lg:justify-start'>
             <button
               onClick={handlePrevCard}
               className='w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary text-2xl flex justify-center items-center text-black transition-transform ease-in-out duration-300 hover:scale-110'

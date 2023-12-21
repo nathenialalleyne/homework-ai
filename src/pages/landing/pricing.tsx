@@ -2,17 +2,19 @@ import React, { useState } from 'react'
 import PricingCard from '../components/pricing-card'
 import LandingHeader from '../components/landing-header'
 
-type Props = {}
 
-export default function PricingPlans({ }: Props) {
+type Props = {
+}
+
+export default React.forwardRef(function PricingPlans({ }: Props, ref: React.Ref<HTMLDivElement>) {
     const [clicked, setClicked] = useState(false)
     return (
-        <div className='w-full flex justify-center items-center'>
+        <div className='w-full flex justify-center items-center' ref={ref}>
             <div className='w-[75rem] flex flex-col items-center '>
                 <div>
-                    <LandingHeader sectionName='PRICING PLANS' headingText='Choose The Plan That Works For You' paragraphText='GeniusDraft offers a variety of plans to meet your needs. Whether you are a student, professional, or business, we have a plan for you.' />
+                    <LandingHeader sectionName='PRICING PLANS' headingText='Choose The Plan That Works For You' paragraphText='GeniusDraft offers a variety of plans to meet your needs. Whether you are a student, professional, or business, we have a plan for you.' headingClassName='xs:w-1/2 lg:w-full flex items-center justify-center'/>
                 </div>
-                <div className='flex gap-4 mt-8'>
+                <div className='flex gap-4 mt-8 xs:flex-col lg:flex-row xs:w-full xs:items-center xs:p-2 lg:p-0'>
                     <PricingCard
                         plan='FREE PLAN'
                         description='Ideal for students starting their writing journey. Our Free Plan offers essential tools for college and high school students at no cost.'
@@ -51,4 +53,4 @@ export default function PricingPlans({ }: Props) {
             </div>
         </div>
     )
-}
+})

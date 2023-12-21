@@ -69,8 +69,8 @@ export default function PricingCard({
         }
     }
     return (
-        <div className='flex flex-col bg-gradient-to-br from-primary to-secondary w-1/3 p-[1px] h-[550px] rounded-lg'>
-            <div className='bg-stone-900 w-full h-full p-4 flex flex-col justify-between rounded-lg'>
+        <div className='flex flex-col bg-gradient-to-br from-primary to-secondary lg:w-1/3 p-[1px] lg:h-[550px] rounded-lg sm:w-2/3 xs:w-full xs:h-[28rem] sm:h-[23rem] xs:m-2'>
+            <div className='bg-stone-900 w-full h-full p-4 flex flex-col justify-between rounded-lg xs:gap-4'>
                 <SectionHeading className=''>{plan}</SectionHeading>
                 <h2 className='text-4xl'>{price}</h2>
                 <p className='font-extralight text-gray-300'>{description}</p>

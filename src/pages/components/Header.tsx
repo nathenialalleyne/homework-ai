@@ -11,15 +11,31 @@ type Props = {
     containerClassName?: string
     removeList?: boolean
     profile?: boolean
+    earlyAccessButton?: boolean
+    divRef?: any
+    focusRef?: any
 };
 
-export default function Header({ containerClassName, removeList, profile }: Props) {
+export default function Header({ containerClassName, removeList, profile, earlyAccessButton, divRef, focusRef }: Props) {
     const router = useRouter();
-    const { openSignUp , redirectToSignUp} = useClerk()
-    return (
-        <header className={classNames('w-full h-fit flex justify-center items-center pt-6 z-0 pl-4 pr-4 md:pl-64 md:pr-64 z-30', containerClassName)}>
+    const { openSignUp, redirectToSignUp } = useClerk()
 
-            <div className='w-full max-w-[75rem] flex flex-col md:flex-row justify-between items-center'>
+    const scrollToElement = () => {
+        const { current } = divRef
+        console.log(current)
+        if (current !== null) {
+            current.scrollIntoView({ behavior: "smooth" })
+        }
+    }
+
+    const focus = () => {
+        focusRef.current?.focus()
+    }
+
+    return (
+        <header className={classNames('w-full h-fit flex justify-center items-center pt-6 z-0 pl-4 pr-4 z-30', containerClassName)}>
+
+            <div className=' w-[75rem] flex flex-col md:flex-row justify-between items-center'>
 
                 <div className='hover:cursor-pointer' onClick={() => {
                     router.push('/')
@@ -29,10 +45,9 @@ export default function Header({ containerClassName, removeList, profile }: Prop
 
                 {!profile ? <ul className='flex justify-center items-center text-white gap-6'>
                     {!removeList ? <ul className='flex flex-col md:flex-row'>
-                        <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0 md:mr-6'>Features</li>
-                        <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0'>Premium</li>
+                        <li className='hover:cursor-pointer transition-all hover:opacity-80 mb-2 md:mb-0' onClick={scrollToElement}>Pricing</li>
                     </ul> : null}
-                    <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-24 h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
+                    {!earlyAccessButton ? <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-24 h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
                         <SignedOut>
                             <SignUpButton mode='redirect'>
                                 <button className='pt-2 pb-2 pl-4 pr-4'>Sign Up</button>
@@ -44,7 +59,11 @@ export default function Header({ containerClassName, removeList, profile }: Prop
                                 <button className='pt-2 pb-2 pl-4 pr-4 whitespace-nowrap'>Home</button>
                             </Link>
                         </SignedIn>
-                    </li>
+                    </li> :
+                        <li className='transition-all hover:opacity-80 bg-gradient-to-r from-primary to-secondary w-full md:w-fit h-fit hover:cursor-pointer rounded-3xl flex justify-center items-center p-[1px]'>
+                            <button className='py-2 px-4 whitespace-nowrap'
+                                onClick={focus}>Register Early</button>
+                        </li>}
                 </ul> : <div onMouseOver={() => {
                     console.log('hover')
                 }}>

@@ -13,10 +13,10 @@ export default function TestimonalCard({
     testimonalImageSource
 }: Props) {
     return (
-        <div className='max-w-[35rem] shrink-0 h-fit bg-gradient-to-l from-primary to-secondary p-[1px] rounded-lg flex items-center justify-center relative'>
-            <div className='flex w-full h-fit bg-stone-900 rounded-lg'>
+        <div className='max-w-[35rem] shrink-0 bg-gradient-to-l from-primary to-secondary p-[1px] rounded-lg flex items-center justify-center relative'>
+            <div className='flex w-full h-full bg-stone-900 rounded-lg'>
                 <div className='w-4 bg-gradient-to-l from-primary to-secondary rounded-l-lg'></div>
-                <div className='p-6 flex flex-col h-full space-y-6'>
+                <div className='p-6 flex flex-col h-full justify-between gap-8'>
                     <p className='text-lg font-extralight'>{testimonalText}</p>
 
                     <div className='flex items-center justify-between pr-4'>

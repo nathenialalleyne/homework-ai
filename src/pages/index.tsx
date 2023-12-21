@@ -1,6 +1,6 @@
 import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import Header from "@/pages/components/Header";
 import LandingHero from "@/pages/landing/hero";
 import HowItWorks from "@/pages/landing/howitworks";
@@ -39,18 +39,20 @@ export default function Home() {
     console.log(userDetails)
   }, [user])
 
+  const divRef = useRef(null)
+  const focusRef = useRef(null)
 
   return (
     <div className="overflow-hidden relative text-white bg-dark flex flex-col items-center">
-      <Header />
+      <Header divRef={divRef} focusRef={focusRef} earlyAccessButton />
       <div className="w-screen mx-auto">
-        <LandingHero />
+        <LandingHero ref={focusRef} />
         <HowItWorks />
         <WhyChoose />
         <Testimonials />
-        <PricingPlans />
-        <CallToAction />
-        <Footer />
+        <PricingPlans ref={divRef} />
+        <CallToAction  focusRef={focusRef}/>
+        <Footer/>
       </div>
     </div>
   );
