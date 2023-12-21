@@ -21,6 +21,7 @@ const publicPaths = [
   /^\/api\/blocked$/,
   /^\/api\/webhooks\/\*$/i,
   /api\/trpc\/earlyAccessRouter\.addToEmailList/i,
+  /api\/trpc\/dbOperations\.getUser/i,
 ]
 
 const isPublic = (path: string) => {
