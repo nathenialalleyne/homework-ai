@@ -21,7 +21,7 @@ export const metadata = {
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <main className={`${poppins.variable} font-sans`}>
-      <div className="bg-dark scrollbar scrolbar-thin scrollbar-thumb-slightlyDark scrollbar-track-lighterDark">
+      <div className="bg-dark scrollbar scrolbar-thin scrollbar-thumb-lighter scrollbar-track-lighterDark w-screen h-screen overflow-y-scroll">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7276895481826418"
           crossOrigin="anonymous">
         </script>
