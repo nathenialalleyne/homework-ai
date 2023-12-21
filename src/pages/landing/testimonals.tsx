@@ -14,7 +14,7 @@ export default function Testimonials({ }: Props) {
       image: '/assets/eh.jpg'
     },
     {
-      author: 'John M. - Graduate Student',
+      author: 'Reggie E. - Graduate Student',
       text: '"As a graduate student, the demands on my writing are high. GeniusDraft has become an invaluable tool in my arsenal. It not only saves time but enhances the quality of my work. It\'s a must- have for anyone serious about academic writing."',
       image: '/assets/jm.jpg'
     },
