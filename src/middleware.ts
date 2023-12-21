@@ -43,29 +43,34 @@ export default authMiddleware({
     request: NextRequest,
     event: NextFetchEvent,
   ) => {
-    if (!isPublic(request.nextUrl.pathname)) {
-      if (!auth.userId) {
-        return redirectToSignIn({ returnBackUrl: request.url! })
-      } else {
-        return NextResponse.next()
-      }
+    if (isPublic(request.nextUrl.pathname)) {
+      return NextResponse.next()
+    }else{
+      return NextResponse.redirect(new URL('/api/blocked', request.url))
     }
+    // if (!isPublic(request.nextUrl.pathname)) {
+    //   if (!auth.userId) {
+    //     return redirectToSignIn({ returnBackUrl: request.url! })
+    //   } else {
+    //     return NextResponse.next()
+    //   }
+    // }
 
-    if (isAPI(request.nextUrl.pathname)) {
-      const userId = auth.userId
-      const { success, pending, limit, reset, remaining } =
-        await ratelimit.limit(`ratelimit_middleware_${userId}`)
-      event.waitUntil(pending)
+    // if (isAPI(request.nextUrl.pathname)) {
+    //   const userId = auth.userId
+    //   const { success, pending, limit, reset, remaining } =
+    //     await ratelimit.limit(`ratelimit_middleware_${userId}`)
+    //   event.waitUntil(pending)
 
-      const res = success
-        ? NextResponse.next()
-        : NextResponse.redirect(new URL('/api/blocked', request.url))
+    //   const res = success
+    //     ? NextResponse.next()
+    //     : NextResponse.redirect(new URL('/api/blocked', request.url))
 
-      res.headers.set('X-RateLimit-Limit', limit.toString())
-      res.headers.set('X-RateLimit-Remaining', remaining.toString())
-      res.headers.set('X-RateLimit-Reset', reset.toString())
-      return res
-    }
+    //   res.headers.set('X-RateLimit-Limit', limit.toString())
+    //   res.headers.set('X-RateLimit-Remaining', remaining.toString())
+    //   res.headers.set('X-RateLimit-Reset', reset.toString())
+    //   return res
+    // }
   },
 })
 
