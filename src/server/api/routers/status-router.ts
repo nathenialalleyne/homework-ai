@@ -30,6 +30,7 @@ export const statusRouter = createTRPCRouter({
       }
       return { state: json.status }
     }),
+    
   promptStatus: publicProcedure
     .input(z.object({ executionID: z.string() }))
     .query(async ({ ctx, input }) => {

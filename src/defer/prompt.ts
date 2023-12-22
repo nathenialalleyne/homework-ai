@@ -49,8 +49,6 @@ async function promptOpenAI({
 
     const finalPrompt = await promptAssignment(prompt, joined, 'test')
 
-    console.log(finalPrompt)
-
     const fileName = `${randomUUID}.txt`
     storage.bucket('prompt-outputs').file(`${jobID}.txt`).save(finalPrompt!)
 

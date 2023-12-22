@@ -62,7 +62,7 @@ export default React.forwardRef(function LandingHero({ }: Props, ref: React.Ref<
                                                     placeholder='johndoe@email.com'
                                                     className='w-8/12 h-16 rounded-l-xl p-4 outline-none text-black font-normal  focus:ring focus:ring-primary focus:ring-opacity-50'
                                                     ref={ref}
-                                                    />
+                                                />
 
                                                 <button
                                                     className='transition-all bg-gradient-to-b from-primary font-semibold to-secondary rounded-r-xl h-16 text-black hover:opacity-80 z-40 flex items-center justify-between px-2 md:w-3/12 xs:w-4/12'>
