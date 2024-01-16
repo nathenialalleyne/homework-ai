@@ -15,7 +15,7 @@ export default function HowItWorksSection({number, text, subText, line, lineClas
       <div className='sm:w-[28rem]'>
           <div className='flex items-center gap-2 sm:flex-row xs:flex-col xs:text-center sm:text-left sm:ml-0'>
               <div className='flex p-[1px] w-12 h-12 bg-gradient-to-br from-primary from-30% to-secondary rounded-full'>
-                  <div className='w-full h-full rounded-full bg-dark flex justify-center items-center'>
+                  <div className='w-full h-full rounded-full bg-dark-100 flex justify-center items-center'>
                       <div className='bg-gradient-to-br from-primary from-30% to-secondary bg-clip-text text-transparent text-2xl font-bold after:content-["*"]after:w-20 after:h-24 after:bg-white'>
                           {number}
                       </div>

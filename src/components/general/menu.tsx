@@ -25,12 +25,12 @@ export default function Menu({ }: Props) {
     const arr = new Array(10).fill(0)
 
     return (
-        <div className='w-[25rem] h-[35rem] p-2 bg-dark/[80%] overflow-hidden '>
+        <div className='w-[25rem] h-[35rem] p-2 bg-dark-100/[80%] overflow-hidden '>
             <input onChange={(e)=>{
                 setSearchSkip(0)
                 setSearch(e.target.value)
                 refetchSearch()
-            }} placeholder='Search Source Name...' className='w-full h-[3rem] bg-dark/[0%] focus:outline-none text-stone-200'></input>
+            }} placeholder='Search Source Name...' className='w-full h-[3rem] bg-dark-100/[0%] focus:outline-none text-stone-200'></input>
             <div className='w-full h-px bg-gradient-to-r from-stone-200/[40%] from-10% to-dark/[0%] to-70% mb-2' />
 
             <div className='overflow-y-scroll w-full h-full scrollbar-thumb-stone-600 scrollbar scrollbar-thin pr-2'>

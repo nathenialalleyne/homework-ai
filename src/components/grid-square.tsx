@@ -5,7 +5,7 @@ export function GridSquare() {
 
     return (
         <div className='h-16 w-16 transparent shrink-0'>
-            <div className='w-[calc(100%-1px)] h-[calc(100%-1px)] bg-dark' />
+            <div className='w-[calc(100%-1px)] h-[calc(100%-1px)] bg-dark-100' />
         </div>
     )
 }

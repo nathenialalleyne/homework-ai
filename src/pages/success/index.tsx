@@ -50,14 +50,14 @@ const Success = () => {
     }, [query, session, isLoading, notFound]);
 
     if (isLoading || notFound) {
-        return <div className='bg-dark w-screen h-screen flex overflow-hidden'>
+        return <div className='bg-dark-100 w-screen h-screen flex overflow-hidden'>
             <Loader key={1} />
         </div>
     }
 
 
     return (
-        <div className="bg-dark w-screen h-screen overflow-hidden relative">
+        <div className="bg-dark-100 w-screen h-screen overflow-hidden relative">
             
             <div className="w-full h-full flex flex-col items-center justify-center relative z-20 overflow-hidden gap-20">
 

@@ -42,9 +42,9 @@ export const EarlyAccessSignUp = () => {
                         }
                     }
                 }}>
-                <Body className="bg-dark my-auto mx-auto font-sans">
+                <Body className="bg-dark-100 my-auto mx-auto font-sans">
                     <Container style={{ backgroundColor: '#101010', width: '100%', maxWidth: 'none' }}>
-                        <Container className="bg-dark border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px] relative">
+                        <Container className="bg-dark-100 border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px] relative">
                             <Section className="mt-[32px]">
                                 <Img
                                     src={`${baseUrl}/colored-logo.png`}

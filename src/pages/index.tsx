@@ -43,7 +43,7 @@ export default function Home() {
   const focusRef = useRef(null)
 
   return (
-    <div className="overflow-y-scroll overflow-x-hidden relative text-white bg-dark flex flex-col items-center w-screen h-screen scrollbar scrolbar-thin scrollbar-thumb-lighter scrollbar-track-lighterDark">
+    <div className="overflow-y-scroll overflow-x-hidden relative text-white bg-dark-100 flex flex-col items-center w-screen h-screen scrollbar scrolbar-thin scrollbar-thumb-lighter scrollbar-track-lighterDark">
       <Header divRef={divRef} focusRef={focusRef} />
       <div className="w-full mx-auto">
         <LandingHero ref={focusRef} />
