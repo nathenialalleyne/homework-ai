@@ -3,7 +3,7 @@ import SectionHeading from './section-heading'
 import Image from 'next/image'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
-import Loader from '@/pages/images/loader'
+import Loader from '@/images/loader'
 import { useClerk, useUser } from '@clerk/nextjs'
 
 

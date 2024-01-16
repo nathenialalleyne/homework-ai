@@ -1,11 +1,11 @@
 import React from 'react';
-import SectionHeading from '../components/section-heading';
-import BoyImage from '../images/boy-image';
-import LandingHeading from '@/pages/components/landing-header';
+import SectionHeading from '../../components/section-heading';
+import BoyImage from '@/images/boy-image';
+import LandingHeading from '@/components/landing-header';
 import Image from 'next/image';
-import DotMatrix from '../images/dot-matrix';
-import HowItWorksSection from '../components/how-it-works-section';
-import HeroBox from '../components/box';
+import DotMatrix from '@/images/dot-matrix';
+import HowItWorksSection from '../../components/how-it-works-section';
+import HeroBox from '../../components/box';
 
 type Props = {};
 

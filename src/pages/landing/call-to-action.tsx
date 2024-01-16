@@ -1,12 +1,14 @@
 import React from 'react'
-import RobotSVG from '../images/robot'
-import LandingHeader from '../components/landing-header'
+import RobotSVG from '@/images/robot'
+import { useClerk } from '@clerk/nextjs'
 
 type Props = {
-    focusRef?: any
+    focusRef?: any,
+    earlyAccess?: boolean
 }
 
-export default function CallToAction({ focusRef }: Props) {
+export default function CallToAction({ focusRef, earlyAccess = false }: Props) {
+    const { redirectToSignUp } = useClerk()
     const scrollToElement = () => {
         const { current } = focusRef
         console.log(current)
@@ -25,7 +27,11 @@ export default function CallToAction({ focusRef }: Props) {
                     <h2 className='text-5xl font-semibold'>Ready to boost your academic success?</h2>
                     <p className='w-10/12 font-extralight text-lg'>Empower your academic journey with personalized, efficient writing. Seize the opportunity to excel in your assignments effortlessly.</p>
                     <button onClick={() => {
-                        scrollToElement()
+                        if (earlyAccess) {
+                            scrollToElement()
+                        } else {
+                            redirectToSignUp()
+                        }
                     }} className='hover:opacity-80 transition-all font-bold bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40 w-fit'>
                         Get Started Now
                     </button>

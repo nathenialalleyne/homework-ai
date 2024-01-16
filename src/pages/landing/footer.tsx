@@ -1,7 +1,7 @@
 import React from 'react'
-import Logo from '../images/logo'
-import TwitterLogo from '../images/twitter'
-import InstagramLogo from '../images/instagram'
+import Logo from '@/images/logo'
+import TwitterLogo from '@/images/twitter'
+import InstagramLogo from '@/images/instagram'
 import Link from 'next/link'
 import Image from 'next/image'
 

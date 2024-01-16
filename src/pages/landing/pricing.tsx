@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import PricingCard from '../components/pricing-card'
-import LandingHeader from '../components/landing-header'
+import PricingCard from '../../components/pricing-card'
+import LandingHeader from '../../components/landing-header'
 
 
 type Props = {

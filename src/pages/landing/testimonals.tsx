@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SectionHeading from '../components/section-heading';
-import TestimonialCard from '../components/testimonal-card';
+import SectionHeading from '../../components/section-heading';
+import TestimonialCard from '../../components/testimonal-card';
 import Image from 'next/image';
 
 

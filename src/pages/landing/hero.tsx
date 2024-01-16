@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import HeroImage from '@/pages/images/hero-image';
-import HeroBox from '@/pages/components/box';
-import SectionHeading from '../components/section-heading';
+import HeroImage from '@/images/hero-image';
+import HeroBox from '@/components/box';
+import SectionHeading from '../../components/section-heading';
 import { api } from '@/utils/api';
-import Loader from '../images/loader';
+import Loader from '@/images/loader';
+import { SignedIn, SignedOut, SignUpButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
-type Props = {};
 
-export default React.forwardRef(function LandingHero({ }: Props, ref: React.Ref<HTMLInputElement>) {
+type Props = {
+    earlyAccess?: boolean
+};
+
+export default React.forwardRef(function LandingHero({ earlyAccess = false }: Props, ref: React.Ref<HTMLInputElement>) {
     const [email, setEmail] = useState('')
     const addToEarlyAccessList = api.earlyAccessRouter.addToEmailList.useMutation();
 
@@ -34,50 +39,52 @@ export default React.forwardRef(function LandingHero({ }: Props, ref: React.Ref<
                                     Are you a college or high school student looking to elevate your writing game? Say goodbye to the struggle of endless assignments and welcome a revolutionary solution – GeniusDraft! Our cutting-edge app transforms the way you approach writing tasks, making academic life smoother and more efficient.
                                 </p>
                                 <div className='w-full'>
-                                    {/* <SignedOut>
-                                        <SignUpButton mode='redirect'>
-                                            <button
-                                                className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
-                                                Try GeniusDraft Today!
-                                            </button>
-                                        </SignUpButton>
-                                    </SignedOut>
+                                    {!earlyAccess ?
+                                        <div>
+                                            <SignedOut>
+                                                <SignUpButton mode='redirect'>
+                                                    <button
+                                                        className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
+                                                        Try GeniusDraft Today!
+                                                    </button>
+                                                </SignUpButton>
+                                            </SignedOut>
+                                            <SignedIn>
+                                                <Link href={'/profile'}>
+                                                    <button
+                                                        className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
+                                                        Go to Dashboard
+                                                    </button>
+                                                </Link>
+                                            </SignedIn>
+                                        </div> :
+                                        <form className='w-full flex flex-col gap-2' action="submit" onSubmit={submit}>
+                                            {!addToEarlyAccessList.isLoading ?
+                                                <div className='w-full flex'>
+                                                    <input
+                                                        onChange={(e) => {
+                                                            setEmail(e.target.value)
+                                                        }} type='email'
+                                                        minLength={1}
+                                                        placeholder='johndoe@email.com'
+                                                        className='w-8/12 h-16 rounded-l-xl p-4 outline-none text-black font-normal  focus:ring focus:ring-primary focus:ring-opacity-50'
+                                                        ref={ref}
+                                                    />
 
-                                    <SignedIn>
-                                        <Link href={'/profile'}>
-                                            <button
-                                                className='hover:opacity-80 transition-all bg-gradient-to-b from-primary to-secondary p-4 rounded-full text-black hover:cursor-pointer z-40'>
-                                                Go to Dashboard
-                                            </button>
-                                        </Link>
-                                    </SignedIn> */}
-                                    <form className='w-full flex flex-col gap-2' action="submit" onSubmit={submit}>
-                                        {!addToEarlyAccessList.isLoading ?
-                                            <div className='w-full flex'>
-                                                <input
-                                                    onChange={(e) => {
-                                                        setEmail(e.target.value)
-                                                    }} type='email'
-                                                    minLength={1}
-                                                    placeholder='johndoe@email.com'
-                                                    className='w-8/12 h-16 rounded-l-xl p-4 outline-none text-black font-normal  focus:ring focus:ring-primary focus:ring-opacity-50'
-                                                    ref={ref}
-                                                />
-
-                                                <button
-                                                    className='transition-all bg-gradient-to-b from-primary font-semibold to-secondary rounded-r-xl h-16 text-black hover:opacity-80 z-40 flex items-center justify-between px-2 md:w-3/12 xs:w-4/12'>
-                                                    Register for Early Access
-                                                </button>
-                                            </div> :
-                                            <Loader />
-                                        }
-                                        {addToEarlyAccessList.isError ?
-                                            <div className='text-red-300'>Error! Please try again.</div> :
-                                            addToEarlyAccessList.data && addToEarlyAccessList.data?.status == 'ok' ?
-                                                <div className='bg-gradient-to-tl from-primary to-secondary text-transparent bg-clip-text'>Thank you for signing up!</div> :
-                                                addToEarlyAccessList.data && addToEarlyAccessList.data?.status == 'registered' &&
-                                                <div className='text-red-300'>You've already signed up for early access!</div>}
-                                    </form>
+                                                    <button
+                                                        className='transition-all bg-gradient-to-b from-primary font-semibold to-secondary rounded-r-xl h-16 text-black hover:opacity-80 z-40 flex items-center justify-between px-2 md:w-3/12 xs:w-4/12'>
+                                                        Register for Early Access
+                                                    </button>
+                                                </div> :
+                                                <Loader />
+                                            }
+                                            {addToEarlyAccessList.isError ?
+                                                <div className='text-red-300'>Error! Please try again.</div> :
+                                                addToEarlyAccessList.data && addToEarlyAccessList.data?.status == 'ok' ?
+                                                    <div className='bg-gradient-to-tl from-primary to-secondary text-transparent bg-clip-text'>Thank you for signing up!</div> :
+                                                    addToEarlyAccessList.data && addToEarlyAccessList.data?.status == 'registered' &&
+                                                    <div className='text-red-300'>You've already signed up for early access!</div>}
+                                        </form>}
                                 </div>
                             </div>
                             <div className='w-full mt-32 xs:hidden lg:block'>

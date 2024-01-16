@@ -14,6 +14,15 @@ export const databaseRouter = createTRPCRouter({
       return user
     }),
 
+  getCurrentUser: publicProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.user.findFirst({
+      where: {
+        id: ctx.auth.userId!,
+      },
+    })
+    return user
+  }),
+
   addSample: publicProcedure
     .input(z.object({ text: z.string() }))
     .mutation(async ({ input, ctx }) => {

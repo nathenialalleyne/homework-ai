@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
-import SuccessPaymentIcon from '../images/success-payment';
+import SuccessPaymentIcon from '@/images/success-payment';
 import useDeviceSize from '@/hooks/use-device-size';
 import { useRouter } from 'next/router';
 import { api } from '@/utils/api';
 import type { Stripe } from 'stripe';
-import Loader from '../images/loader';
-import FullLogo from '../images/logo';
+import Loader from '@/images/loader';
+import FullLogo from '@/images/logo';
 
 const Success = () => {
     const deviceSize = useDeviceSize();

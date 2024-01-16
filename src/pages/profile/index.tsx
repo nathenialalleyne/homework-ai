@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid'
-import Tiptap from '@/pages/components/Tiptap'
+import Tiptap from '@/components/Tiptap'
 
 type Props = {}
 
